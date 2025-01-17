@@ -5,8 +5,8 @@
 //  Created by Gokul P on 1/16/25.
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 import UserNotifications
 
 class BackgroundTaskManager: NSObject, CLLocationManagerDelegate {
@@ -19,14 +19,5 @@ class BackgroundTaskManager: NSObject, CLLocationManagerDelegate {
 
     func stopBackgroundTask() {
         locationManager.stopMonitoring()
-        // Notify the user that monitoring has stopped
-        let content = UNMutableNotificationContent()
-        content.title = "Monitoring Stopped"
-        content.body = "The background monitoring duration has ended."
-        content.sound = .default
-
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
 }
-

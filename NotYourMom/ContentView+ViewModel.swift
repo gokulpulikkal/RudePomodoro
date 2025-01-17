@@ -75,6 +75,14 @@ extension ContentView {
             remainingTime = 0
 
             print("✅ Monitoring session stopped")
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Monitoring Stopped"
+            content.body = "The background monitoring duration has ended."
+            content.sound = .default
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
         }
 
         deinit {
