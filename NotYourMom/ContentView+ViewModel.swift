@@ -75,7 +75,7 @@ extension ContentView {
             remainingTime = 0
 
             print("✅ Monitoring session stopped")
-            
+
             let content = UNMutableNotificationContent()
             content.title = "Monitoring Stopped"
             content.body = "The background monitoring duration has ended."
@@ -86,7 +86,9 @@ extension ContentView {
         }
 
         deinit {
-            stopMonitoring()
+            if isMonitoring {
+                stopMonitoring()
+            }
         }
 
         // MARK: - Time Formatting
