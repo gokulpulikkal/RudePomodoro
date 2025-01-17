@@ -12,6 +12,7 @@ import CoreLocation
 
 @main
 struct NotYourMomApp: App {
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     
     init() {
         requestNotificationPermission()
@@ -31,5 +32,18 @@ struct NotYourMomApp: App {
                 print("Error requesting notification permission: \(error.localizedDescription)")
             }
         }
+    }
+}
+
+
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        return true
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Specify how you want to present the notification when app is in foreground
+        completionHandler([.banner, .sound, .badge])
     }
 }
