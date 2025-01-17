@@ -11,27 +11,14 @@ import UserNotifications
 
 class BackgroundTaskManager: NSObject, CLLocationManagerDelegate {
     static let shared = BackgroundTaskManager()
-    private let locationManager = CLLocationManager()
-    private var timer: Timer?
-
-    override init() {
-        super.init()
-        locationManager.delegate = self
-        locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.pausesLocationUpdatesAutomatically = true
-        locationManager.desiredAccuracy = kCLLocationAccuracyReduced
-    }
+    private let locationManager = LocationManager.shared
 
     func startBackgroundLocationTask() {
-        locationManager.requestAlwaysAuthorization()
-        locationManager.startUpdatingLocation()
+        locationManager.startMonitoring()
     }
 
     func stopBackgroundTask() {
-        locationManager.stopUpdatingLocation()
-        timer?.invalidate()
-        timer = nil
-
+        locationManager.stopMonitoring()
         // Notify the user that monitoring has stopped
         let content = UNMutableNotificationContent()
         content.title = "Monitoring Stopped"
@@ -40,10 +27,6 @@ class BackgroundTaskManager: NSObject, CLLocationManagerDelegate {
 
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("Location updated")
     }
 }
 

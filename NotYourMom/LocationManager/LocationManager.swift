@@ -5,8 +5,8 @@
 //  Created by Gokul P on 1/17/25.
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
 class LocationManager: NSObject, CLLocationManagerDelegate {
     static let shared = LocationManager()
@@ -22,29 +22,27 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         // Use significant location changes for better battery life
         locationManager.desiredAccuracy = kCLLocationAccuracyReduced
         locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.showsBackgroundLocationIndicator = true // Changed to true for transparency
-        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.showsBackgroundLocationIndicator = true
     }
 
     func startMonitoring() {
         // Request authorization first
-        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
         // Use significant location changes instead
-        locationManager.startMonitoringSignificantLocationChanges()
+        locationManager.startUpdatingLocation()
     }
 
     func stopMonitoring() {
-        locationManager.stopMonitoringSignificantLocationChanges()
+        locationManager.stopUpdatingLocation()
     }
 
     // MARK: - CLLocationManagerDelegate
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
-        case .authorizedAlways:
+        case .notDetermined, .authorizedWhenInUse:
             print("✅ Location permission granted")
-            // Start significant location changes
-            locationManager.startMonitoringSignificantLocationChanges()
+            locationManager.requestAlwaysAuthorization()
         default:
             print("❌ Location permission not granted")
         }
