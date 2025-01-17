@@ -23,7 +23,7 @@ class PhoneMotionManager {
     var currentState: PhoneState = .flat
     var isMonitoring = false
     private var lastNotificationTime = Date()
-    private let minimumTimeBetweenNotifications: TimeInterval = 3 // 5 seconds cooldown
+    private let minimumTimeBetweenNotifications: TimeInterval = 6 // 5 seconds cooldown
 
     /// Add singleton instance
     static let shared = PhoneMotionManager()

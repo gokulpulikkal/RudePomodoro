@@ -34,11 +34,11 @@ class NotificationManager {
         content.body = state == .lifted ? messages.randomElement() ?? "Stay focused!" : "Phone placed down"
         content.sound = .default
         content.interruptionLevel = .critical
-
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
-            trigger: nil
+            trigger: trigger
         )
 
         UNUserNotificationCenter.current().add(request)
