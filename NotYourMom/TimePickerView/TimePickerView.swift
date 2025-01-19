@@ -20,35 +20,7 @@ struct TimePickerView: View {
                 ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: 10) {
                         ForEach(0...60, id: \.self) { value in
-                            let reminder = value % 5
-                            RoundedRectangle(cornerRadius: 5)
-                                .frame(width: 5, height: reminder != 0 ? 15 : 30, alignment: .center)
-                                .overlay {
-                                    if reminder == 0 {
-                                        GeometryReader { geo in
-                                            let midX = geo.frame(in: .global)
-                                                .midX
-                                            let screenMidX = UIScreen.main
-                                                .bounds.width / 2
-                                            let distance =
-                                                abs(midX - screenMidX)
-                                            let scale = max(
-                                                1.3 - (distance / 200),
-                                                0.7
-                                            )
-
-                                            Text("\(value)")
-                                                .foregroundStyle(.red)
-                                                .font(.system(size: 30))
-                                                .bold()
-                                                .fixedSize()
-                                                .scaleEffect(scale)
-                                                .frame(width: 50, height: 50)
-                                                .offset(y: -45)
-                                        }
-                                        .frame(width: 50)
-                                    }
-                                }
+                            TimerChildView(value: value, position: position)
                         }
                     }
                     .frame(height: 200)
@@ -67,8 +39,6 @@ struct TimePickerView: View {
                 }, set: { val in
                     if let val {
                         position = val
-                        print("The closest lower snap point is \(val.findNearestMultipleOf5Lower())")
-                        print("The closest upper snap point is \(val.findNearestMultipleOf5Lower())")
                     }
                 }))
                 .safeAreaPadding(.horizontal, horizontalPadding)
@@ -101,32 +71,39 @@ struct CustomSnappingBehavior: ScrollTargetBehavior {
     TimePickerView()
 }
 
-extension Int {
-    func findNearestMultipleOf5Lower() -> Int {
-        // Get the remainder when divided by 5
-        let remainder = self % 5
-        
-        // Find the two closest multiples of 5
-        let lowerMultiple = self - remainder
-        let upperMultiple = lowerMultiple + 5
-        
-        // Compare which multiple is closer
-        // If remainder is less than or equal to 2.5, round down
-        // Otherwise round up
-        return remainder <= 2 ? lowerMultiple : upperMultiple
+struct TimerChildView: View {
+    let value: Int
+    let position: Int?
+
+    var body: some View {
+        let reminder = value % 5
+        RoundedRectangle(cornerRadius: 5)
+            .frame(width: 5, height: reminder != 0 ? 15 : 30, alignment: .center)
+            .overlay {
+                if reminder == 0 {
+                    Text("\(value)")
+                        .foregroundStyle(.red)
+                        .font(.system(size: 30))
+                        .bold()
+                        .scaleEffect(getScale(value: value, currentPosition: position))
+                        .fixedSize()
+                        .frame(width: 50, height: 50)
+                        .offset(y: -45)
+                }
+            }
+            .animation(.snappy, value: position)
     }
-    
-    func findNearestMultipleOf5Upper() -> Int {
-        // Get the remainder when divided by 5
-        let remainder = self % 5
-        
-        // Find the two closest multiples of 5
-        let lowerMultiple = self - remainder
-        let upperMultiple = lowerMultiple + 5
-        
-        // Compare which multiple is closer
-        // If remainder is less than or equal to 2.5, round down
-        // Otherwise round up
-        return remainder <= 2 ? upperMultiple: lowerMultiple
+
+    func getScale(value: Int, currentPosition: Int?) -> CGSize {
+        guard let currentPosition else {
+            return CGSize(width: 1, height: 1)
+        }
+        let diff = abs(currentPosition - value)
+        if diff >= 5 {
+            return CGSize(width: 1, height: 1)
+        }
+        let scale: Double = 1 + (Double(5 - diff) / 10)
+        return CGSize(width: scale, height: scale)
     }
+
 }
