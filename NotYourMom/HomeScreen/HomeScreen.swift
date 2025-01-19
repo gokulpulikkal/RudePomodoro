@@ -16,11 +16,28 @@ struct HomeScreen: View {
     var body: some View {
         ZStack {
             rivAnimation
-            timerText
-                .padding(.top, 300)
-            actionButton
+            VStack {
+                timerText
+                    .onTapGesture {
+                        withAnimation(.easeInOut) {
+                            if viewModel.currentState == .idle {
+                                viewModel.isTimerEditing = true
+                            }
+                        }
+                    }
+                actionButton
+            }
+            .padding(.top, 330)
+            .opacity(viewModel.isTimerEditing ? 0 : 1)
+            .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
+
+            timeSelectorView
+                .padding(.top, 330)
+                .opacity(viewModel.isTimerEditing ? 1 : 0)
+                .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
         }
         .animation(.snappy, value: viewModel.remainingTime)
+        .animation(.easeInOut, value: viewModel.isTimerEditing)
     }
 }
 
@@ -41,26 +58,40 @@ extension HomeScreen {
     }
 
     var actionButton: some View {
-        VStack {
-            Spacer()
+        Button(action: {
+            handleActionButtons()
+        }, label: {
+            Circle()
+                .fill(Color.red.opacity(0.9))
+                .frame(width: 60, height: 60)
+                .overlay(
+                    Image(systemName: viewModel.currentSymbol)
+                        .font(.system(size: 30))
+                        .foregroundColor(.white)
+                        .offset(x: viewModel.currentSymbol == "play.fill" ? 2 : 0)
+                        .bold()
+                        .contentTransition(.symbolEffect(.replace.downUp))
+                )
+        })
+        .buttonStyle(.plain)
+    }
+
+    var timeSelectorView: some View {
+        VStack(spacing: 30) {
+            TimePickerView(position: $viewModel.timerTime)
+                .frame(height: 150)
             Button(action: {
-                handleActionButtons()
+                viewModel.setSelectedDuration()
+                viewModel.isTimerEditing = false
             }, label: {
-                Circle()
-                    .fill(Color.red.opacity(0.9))
-                    .frame(width: 60, height: 60)
-                    .overlay(
-                        Image(systemName: viewModel.currentSymbol)
-                            .font(.system(size: 30))
-                            .foregroundColor(.white)
-                            .offset(x: viewModel.currentSymbol == "play.fill" ? 2 : 0)
-                            .bold()
-                            .contentTransition(.symbolEffect(.replace.downUp))
-                    )
+                Text("Done")
+                    .font(.system(size: 20))
+                    .bold()
+                    .foregroundStyle(.white)
             })
-            .buttonStyle(.plain)
-            Spacer()
-                .frame(height: 100)
+            .padding()
+            .background(.thinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 25))
         }
     }
 

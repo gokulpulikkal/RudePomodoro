@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TimePickerView: View {
-    @State var position: Int? = 10
+    @Binding var position: Int?
     @State var snappingPosition: Int? = 10
     @State var isLoaded = false
 
@@ -61,6 +61,6 @@ struct TimePickerView: View {
 // Preview remains the same
 
 #Preview {
-    TimePickerView()
+    TimePickerView(position: .constant(30))
         .background(.blue)
 }

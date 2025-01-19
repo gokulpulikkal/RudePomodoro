@@ -21,6 +21,8 @@ extension HomeScreen {
 
         // MARK: - Properties
 
+        var timerTime: Int? = 10
+        var isTimerEditing: Bool = false
         var currentState: AnimationActions = .idle
         var selectedDuration: TimeInterval = 600 // Default 10 minutes
         var remainingTime: TimeInterval = 0
@@ -40,6 +42,11 @@ extension HomeScreen {
         }
 
         // MARK: - Monitoring Control
+        
+        func setSelectedDuration() {
+            selectedDuration = Double(timerTime ?? 10) * 60
+            setInitialValues()
+        }
 
         func setInitialValues() {
             currentState = .idle
