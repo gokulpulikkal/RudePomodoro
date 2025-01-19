@@ -20,6 +20,7 @@ struct HomeScreen: View {
                 .padding(.top, 300)
             actionButton
         }
+        .animation(.snappy, value: viewModel.remainingTime)
     }
 }
 
@@ -35,7 +36,8 @@ extension HomeScreen {
     var timerText: some View {
         Text(viewModel.formattedRemainingTime)
             .font(.system(size: 60, weight: .bold, design: .monospaced))
-            .foregroundColor(.blue)
+            .foregroundStyle(.white)
+            .contentTransition(.numericText())
     }
 
     var actionButton: some View {
