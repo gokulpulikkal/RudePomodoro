@@ -38,21 +38,21 @@ extension HomeScreen {
         }
 
         init() {
-            Task {
-                await setInitialValues()
-            }
+            setInitialValues()
         }
 
         // MARK: - Monitoring Control
 
-        func setSelectedDuration() async {
+        func setSelectedDuration() {
             selectedDuration = Double(timerTime ?? 10) * 60
-            await setInitialValues()
+            setInitialValues()
         }
 
-        func setInitialValues() async {
-            currentState = .idle
-            remainingTime = selectedDuration
+        func setInitialValues() {
+            Task { @MainActor in
+                currentState = .idle
+                remainingTime = selectedDuration
+            }
         }
 
         func startMonitoring() async -> Bool {

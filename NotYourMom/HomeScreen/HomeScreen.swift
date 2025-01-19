@@ -82,9 +82,7 @@ extension HomeScreen {
                 .frame(height: 150)
             Button(action: {
                 viewModel.isTimerEditing = false
-                Task { @MainActor in
-                    await viewModel.setSelectedDuration()
-                }
+                viewModel.setSelectedDuration()
             }, label: {
                 Text("Done")
                     .font(.system(size: 20))
@@ -98,7 +96,7 @@ extension HomeScreen {
     }
 
     func handleActionButtons() {
-        Task {
+        Task { @MainActor in
             switch viewModel.currentState {
             case .idle:
                 if await viewModel.startMonitoring() {
@@ -108,10 +106,10 @@ extension HomeScreen {
                 await viewModel.stopMonitoring()
                 rivAnimModel.triggerInput("stop")
             case .stopped:
-                await viewModel.setInitialValues()
+                viewModel.setInitialValues()
                 rivAnimModel.triggerInput("reset")
             case .finished:
-                await viewModel.setInitialValues()
+                viewModel.setInitialValues()
                 rivAnimModel.triggerInput("reset")
             }
         }
