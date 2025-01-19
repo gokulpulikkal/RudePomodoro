@@ -48,7 +48,6 @@ struct TimePickerView: View {
                     }
                 }))
                 .safeAreaPadding(.horizontal, horizontalPadding)
-                .background(.black)
             }
             .onAppear {
                 if !isLoaded {
@@ -63,4 +62,5 @@ struct TimePickerView: View {
 
 #Preview {
     TimePickerView()
+        .background(.blue)
 }
