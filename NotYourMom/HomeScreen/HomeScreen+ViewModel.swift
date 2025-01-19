@@ -34,13 +34,16 @@ extension HomeScreen {
                 "arrow.trianglehead.counterclockwise"
             }
         }
+        
+        init() {
+            setInitialValues()
+        }
 
         // MARK: - Monitoring Control
 
         func setInitialValues() {
             currentState = .idle
-            selectedDuration = 600 // Default 10 minutes
-            remainingTime = 0
+            remainingTime = selectedDuration
         }
 
         func startMonitoring() async -> Bool {
