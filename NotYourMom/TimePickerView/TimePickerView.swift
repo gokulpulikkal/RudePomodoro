@@ -44,6 +44,7 @@ struct TimePickerView: View {
                 }, set: { val in
                     if let val {
                         position = val
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     }
                 }))
                 .safeAreaPadding(.horizontal, horizontalPadding)
