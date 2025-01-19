@@ -5,24 +5,21 @@
 //  Created by Gokul P on 1/16/25.
 //
 
+import DotLottie
 import SwiftUI
 
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var selectedMinutes = 10.0
-    
+
     var body: some View {
         VStack(spacing: 20) {
-            Text("Not Your Mom")
-                .font(.largeTitle)
-                .bold()
-            
             if viewModel.isMonitoring {
                 // Timer Display
                 Text(viewModel.formattedRemainingTime)
                     .font(.system(size: 60, weight: .bold, design: .monospaced))
                     .foregroundColor(.blue)
-                
+
                 Button(action: {
                     viewModel.stopMonitoring()
                 }) {
@@ -39,11 +36,11 @@ struct ContentView: View {
                 VStack(alignment: .leading) {
                     Text("Monitoring Duration: \(Int(selectedMinutes)) minutes")
                         .font(.headline)
-                    
+
                     Slider(value: $selectedMinutes, in: 1...60, step: 1)
                 }
                 .padding()
-                
+
                 Button(action: {
                     viewModel.selectedDuration = selectedMinutes * 60
                     viewModel.startMonitoring()

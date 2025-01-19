@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4B22A0D02D3B70E700B1A490 /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = 4B22A0CF2D3B70E700B1A490 /* DotLottie */; };
+		4B22A0D52D3C262600B1A490 /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 4B22A0D42D3C262600B1A490 /* RiveRuntime */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4BCEA64E2D39802C001B479F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B22A0D02D3B70E700B1A490 /* DotLottie in Frameworks */,
+				4B22A0D52D3C262600B1A490 /* RiveRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +132,8 @@
 			);
 			name = NotYourMom;
 			packageProductDependencies = (
+				4B22A0CF2D3B70E700B1A490 /* DotLottie */,
+				4B22A0D42D3C262600B1A490 /* RiveRuntime */,
 			);
 			productName = NotYourMom;
 			productReference = 4BCEA63D2D39802A001B479F /* NotYourMom.app */;
@@ -208,6 +217,10 @@
 			);
 			mainGroup = 4BCEA6342D39802A001B479F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4B22A0CE2D3B70E700B1A490 /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
+				4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4BCEA63E2D39802A001B479F /* Products */;
 			projectDirPath = "";
@@ -579,6 +592,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B22A0CE2D3B70E700B1A490 /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rive-app/rive-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.7;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B22A0CF2D3B70E700B1A490 /* DotLottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B22A0CE2D3B70E700B1A490 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
+			productName = DotLottie;
+		};
+		4B22A0D42D3C262600B1A490 /* RiveRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */;
+			productName = RiveRuntime;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4BCEA6352D39802A001B479F /* Project object */;
 }

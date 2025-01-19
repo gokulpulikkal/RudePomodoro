@@ -1,0 +1,72 @@
+//
+//  HomeScreen.swift
+//  NotYourMom
+//
+//  Created by Gokul P on 1/18/25.
+//
+
+import RiveRuntime
+import SwiftUI
+
+struct HomeScreen: View {
+    @State var viewModel = ViewModel()
+
+    let rivAnimModel = RiveViewModel(fileName: "pomodoro_app_mob", stateMachineName: "State Machine")
+
+    var body: some View {
+        ZStack {
+            rivAnimModel.view()
+                .ignoresSafeArea()
+                .aspectRatio(contentMode: .fill)
+                .offset(x: -50)
+                .ignoresSafeArea()
+
+            Text(viewModel.formattedRemainingTime)
+                .font(.system(size: 60, weight: .bold, design: .monospaced))
+                .foregroundColor(.blue)
+                .padding(.top, 300)
+            VStack {
+                Spacer()
+                Button(action: {
+                    Task {
+                        switch viewModel.currentState {
+                        case .idle:
+                            if await viewModel.startMonitoring() {
+                                rivAnimModel.triggerInput("start")
+                            }
+                        case .running:
+                            await viewModel.stopMonitoring()
+                            rivAnimModel.triggerInput("stop")
+                        case .stopped:
+                            viewModel.setInitialValues()
+                            rivAnimModel.triggerInput("reset")
+                        case .finished:
+                            viewModel.setInitialValues()
+                            rivAnimModel.triggerInput("reset")
+                        }
+                    }
+
+                }, label: {
+                    Circle()
+                        .fill(Color.red.opacity(0.9))
+                        .frame(width: 60, height: 60)
+                        .overlay(
+                            Image(systemName: viewModel.currentSymbol)
+                                .font(.system(size: 30))
+                                .foregroundColor(.white)
+                                .offset(x: viewModel.currentSymbol == "play.fill" ? 2 : 0)
+                                .bold()
+                                .contentTransition(.symbolEffect(.replace.downUp))
+                        )
+                })
+                .buttonStyle(.plain)
+                Spacer()
+                    .frame(height: 100)
+            }
+        }
+    }
+}
+
+#Preview {
+    HomeScreen()
+}
