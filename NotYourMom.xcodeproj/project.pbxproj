@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4B22A0D02D3B70E700B1A490 /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = 4B22A0CF2D3B70E700B1A490 /* DotLottie */; };
 		4B22A0D52D3C262600B1A490 /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 4B22A0D42D3C262600B1A490 /* RiveRuntime */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +69,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B22A0D02D3B70E700B1A490 /* DotLottie in Frameworks */,
 				4B22A0D52D3C262600B1A490 /* RiveRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,7 +130,6 @@
 			);
 			name = NotYourMom;
 			packageProductDependencies = (
-				4B22A0CF2D3B70E700B1A490 /* DotLottie */,
 				4B22A0D42D3C262600B1A490 /* RiveRuntime */,
 			);
 			productName = NotYourMom;
@@ -218,7 +215,6 @@
 			mainGroup = 4BCEA6342D39802A001B479F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				4B22A0CE2D3B70E700B1A490 /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
 				4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -432,8 +428,9 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -465,8 +462,9 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -594,14 +592,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4B22A0CE2D3B70E700B1A490 /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/rive-app/rive-ios";
@@ -613,11 +603,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4B22A0CF2D3B70E700B1A490 /* DotLottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4B22A0CE2D3B70E700B1A490 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
-			productName = DotLottie;
-		};
 		4B22A0D42D3C262600B1A490 /* RiveRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */;
