@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-
+@MainActor
 struct TimerChildView: View {
     let value: Int
     let position: Int?

@@ -81,8 +81,10 @@ extension HomeScreen {
             TimePickerView(position: $viewModel.timerTime)
                 .frame(height: 150)
             Button(action: {
-                viewModel.setSelectedDuration()
                 viewModel.isTimerEditing = false
+                Task { @MainActor in
+                    await viewModel.setSelectedDuration()
+                }
             }, label: {
                 Text("Done")
                     .font(.system(size: 20))
@@ -106,10 +108,10 @@ extension HomeScreen {
                 await viewModel.stopMonitoring()
                 rivAnimModel.triggerInput("stop")
             case .stopped:
-                viewModel.setInitialValues()
+                await viewModel.setInitialValues()
                 rivAnimModel.triggerInput("reset")
             case .finished:
-                viewModel.setInitialValues()
+                await viewModel.setInitialValues()
                 rivAnimModel.triggerInput("reset")
             }
         }

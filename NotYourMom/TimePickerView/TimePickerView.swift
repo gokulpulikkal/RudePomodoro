@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct TimePickerView: View {
     @Binding var position: Int?
     @State var snappingPosition: Int? = 10
