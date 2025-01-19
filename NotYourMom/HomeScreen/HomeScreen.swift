@@ -38,6 +38,9 @@ struct HomeScreen: View {
         }
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
+        .onChange(of: viewModel.currentState) {
+            handleAnimationStates()
+        }
     }
 }
 
@@ -111,6 +114,18 @@ extension HomeScreen {
             case .finished:
                 viewModel.setInitialValues()
                 rivAnimModel.triggerInput("reset")
+            }
+        }
+    }
+    
+    func handleAnimationStates() {
+        Task { @MainActor in
+            switch viewModel.currentState {
+            case .finished:
+                print("Calling the finish!!")
+                rivAnimModel.triggerInput("finish")
+            default:
+                print("No need of handling! for the state \(viewModel.currentState)")
             }
         }
     }

@@ -24,15 +24,15 @@ extension HomeScreen {
         var timerTime: Int? = 10
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
-        var selectedDuration: TimeInterval = 600 // Default 10 minutes
+        var selectedDuration: TimeInterval = 60 // Default 10 minutes
         var remainingTime: TimeInterval = 0
         var currentSymbol: String {
             switch currentState {
-            case .idle, .finished:
+            case .idle:
                 "play.fill"
             case .running:
                 "stop.fill"
-            case .stopped:
+            case .stopped, .finished:
                 "arrow.trianglehead.counterclockwise"
             }
         }
@@ -115,14 +115,6 @@ extension HomeScreen {
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
             try? await UNUserNotificationCenter.current().add(request)
         }
-
-//        deinit {
-//            Task {
-//                if sessionStatus == .started {
-//                    await stopMonitoring()
-//                }
-//            }
-//        }
 
         // MARK: - Time Formatting
 
