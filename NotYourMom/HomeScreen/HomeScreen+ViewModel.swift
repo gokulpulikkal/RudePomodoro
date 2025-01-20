@@ -15,8 +15,8 @@ extension HomeScreen {
     @MainActor
     @Observable
     class ViewModel {
-        private let motionManager = PhoneMotionManager.shared
-        private let backgroundManager = BackgroundTaskManager.shared
+        private let motionManager: PhoneMotionManager
+        private let musicManager: MusicServiceProtocol
         private var countdownTimer: Timer?
 
         // MARK: - Properties
@@ -37,7 +37,9 @@ extension HomeScreen {
             }
         }
 
-        init() {
+        init(musicManager: MusicServiceProtocol = MusicManager(), motionManager: PhoneMotionManager = PhoneMotionManager()) {
+            self.musicManager = musicManager
+            self.motionManager = motionManager
             setInitialValues()
         }
 
@@ -64,8 +66,7 @@ extension HomeScreen {
             currentState = .running
             remainingTime = selectedDuration
 
-            // First start background task to ensure background runtime
-            backgroundManager.startBackgroundLocationTask()
+            await musicManager.startPlayback()
 
             // Then start motion detection
             motionManager.startMonitoring()
@@ -100,7 +101,7 @@ extension HomeScreen {
             motionManager.stopMonitoring()
 
             // Stop background task
-            backgroundManager.stopBackgroundTask()
+            await musicManager.stopPlayback()
 
             // Clean up timer
             countdownTimer?.invalidate()

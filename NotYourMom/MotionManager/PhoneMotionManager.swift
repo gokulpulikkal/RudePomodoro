@@ -25,10 +25,7 @@ class PhoneMotionManager {
     private var lastNotificationTime = Date()
     private let minimumTimeBetweenNotifications: TimeInterval = 6 // 5 seconds cooldown
 
-    /// Add singleton instance
-    static let shared = PhoneMotionManager()
-
-    private init() {
+    init() {
         setupMotionDetection()
     }
 

@@ -1,22 +1,19 @@
 //
-//  BackgroundTaskManager.swift
+//  MusicManager.swift
 //  NotYourMom
 //
-//  Created by Gokul P on 1/16/25.
+//  Created by Gokul P on 1/19/25.
 //
 
-import AVFoundation
 import Foundation
-import UserNotifications
+import AVFoundation
 
-class BackgroundTaskManager: NSObject {
-
-    var avPlayer: AVAudioPlayer?
-    let path = Bundle.main.path(forResource: "rain.wav", ofType: nil)
-
-    static let shared = BackgroundTaskManager()
-
-    override private init() {
+actor MusicManager: MusicServiceProtocol {
+    
+    private var avPlayer: AVAudioPlayer?
+    private let path = Bundle.main.path(forResource: "rain.wav", ofType: nil)
+    
+    init() {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback)
@@ -24,8 +21,8 @@ class BackgroundTaskManager: NSObject {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
     }
-
-    func startBackgroundLocationTask() {
+    
+    func startPlayback() {
         guard let path else {
             return
         }
@@ -38,8 +35,14 @@ class BackgroundTaskManager: NSObject {
             print("couldn't load file :(")
         }
     }
-
-    func stopBackgroundTask() {
+    
+    func stopPlayback() {
         avPlayer?.stop()
     }
+    
+    func toggleMute() {
+        avPlayer?.stop()
+    }
+    
+    
 }
