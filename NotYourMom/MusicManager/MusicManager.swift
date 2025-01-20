@@ -40,8 +40,8 @@ actor MusicManager: MusicServiceProtocol {
         avPlayer?.stop()
     }
     
-    func toggleMute() {
-        avPlayer?.stop()
+    func toggleMute(isMute: Bool) {
+        avPlayer?.setVolume(isMute ? 0: 5, fadeDuration: 0)
     }
     
     

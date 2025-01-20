@@ -8,6 +8,7 @@
 import RiveRuntime
 import SwiftUI
 
+@MainActor
 struct HomeScreen: View {
     @State var viewModel = ViewModel()
 
@@ -35,6 +36,24 @@ struct HomeScreen: View {
                 .padding(.top, 330)
                 .opacity(viewModel.isTimerEditing ? 1 : 0)
                 .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        viewModel.toggleAudioMute()
+                    }, label: {
+                        Image(systemName: viewModel.isMute ? "speaker.slash" : "speaker")
+                            .font(.system(size: 30))
+                            .frame(width: 30, height: 30, alignment: .center)
+                            .contentTransition(.symbolEffect(.replace))
+                    })
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 200)
+                }
+                .padding()
+            }
         }
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
@@ -117,7 +136,7 @@ extension HomeScreen {
             }
         }
     }
-    
+
     func handleAnimationStates() {
         Task { @MainActor in
             switch viewModel.currentState {

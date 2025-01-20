@@ -20,7 +20,8 @@ extension HomeScreen {
         private var countdownTimer: Timer?
 
         // MARK: - Properties
-
+        
+        var isMute: Bool = true
         var timerTime: Int? = 10
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
@@ -54,6 +55,13 @@ extension HomeScreen {
             Task { @MainActor in
                 currentState = .idle
                 remainingTime = selectedDuration
+            }
+        }
+        
+        func toggleAudioMute() {
+            isMute.toggle()
+            Task {
+                await musicManager.toggleMute(isMute: isMute)
             }
         }
 
