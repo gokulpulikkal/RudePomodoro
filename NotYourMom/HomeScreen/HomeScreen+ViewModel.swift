@@ -24,8 +24,8 @@ extension HomeScreen {
         var timerTime: Int? = 10
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
-        var selectedDuration: TimeInterval = 60 // Default 10 minutes
-        var remainingTime: TimeInterval = 0
+        var selectedDuration: TimeInterval = 25 * 60 // Default 10 minutes
+        var remainingTime: TimeInterval = 25 * 60
         var currentSymbol: String {
             switch currentState {
             case .idle:
