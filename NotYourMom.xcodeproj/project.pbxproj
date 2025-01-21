@@ -8,9 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		4B22A0D52D3C262600B1A490 /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 4B22A0D42D3C262600B1A490 /* RiveRuntime */; };
+		4B22A16A2D3F3BAE00B1A490 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B22A1692D3F3BAE00B1A490 /* WidgetKit.framework */; };
+		4B22A16C2D3F3BAE00B1A490 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B22A16B2D3F3BAE00B1A490 /* SwiftUI.framework */; };
+		4B22A17D2D3F3BB000B1A490 /* RudePomoWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4B22A1672D3F3BAE00B1A490 /* RudePomoWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4B22A17B2D3F3BB000B1A490 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BCEA6352D39802A001B479F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4B22A1662D3F3BAE00B1A490;
+			remoteInfo = RudePomoWidgetExtension;
+		};
 		4BCEA64E2D39802C001B479F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4BCEA6352D39802A001B479F /* Project object */;
@@ -27,13 +37,44 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		4B22A17E2D3F3BB000B1A490 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				4B22A17D2D3F3BB000B1A490 /* RudePomoWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		4B22A1672D3F3BAE00B1A490 /* RudePomoWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RudePomoWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B22A1692D3F3BAE00B1A490 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		4B22A16B2D3F3BAE00B1A490 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		4BCEA63D2D39802A001B479F /* NotYourMom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotYourMom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCEA64D2D39802C001B479F /* NotYourMomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotYourMomTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCEA6572D39802C001B479F /* NotYourMomUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotYourMomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4B22A1822D3F3BB000B1A490 /* Exceptions for "RudePomoWidget" folder in "RudePomoWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */;
+		};
+		4B22A1842D3F3D3B00B1A490 /* Exceptions for "RudePomoWidget" folder in "NotYourMom" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RudePomoWidgetLiveActivity.swift,
+			);
+			target = 4BCEA63C2D39802A001B479F /* NotYourMom */;
+		};
 		4BCEA6782D39D921001B479F /* Exceptions for "NotYourMom" folder in "NotYourMom" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -44,6 +85,15 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4B22A16D2D3F3BAE00B1A490 /* RudePomoWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4B22A1842D3F3D3B00B1A490 /* Exceptions for "RudePomoWidget" folder in "NotYourMom" target */,
+				4B22A1822D3F3BB000B1A490 /* Exceptions for "RudePomoWidget" folder in "RudePomoWidgetExtension" target */,
+			);
+			path = RudePomoWidget;
+			sourceTree = "<group>";
+		};
 		4BCEA63F2D39802A001B479F /* NotYourMom */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -65,6 +115,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4B22A1642D3F3BAE00B1A490 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B22A16C2D3F3BAE00B1A490 /* SwiftUI.framework in Frameworks */,
+				4B22A16A2D3F3BAE00B1A490 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4BCEA63A2D39802A001B479F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -90,12 +149,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B22A1682D3F3BAE00B1A490 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4B22A1692D3F3BAE00B1A490 /* WidgetKit.framework */,
+				4B22A16B2D3F3BAE00B1A490 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		4BCEA6342D39802A001B479F = {
 			isa = PBXGroup;
 			children = (
 				4BCEA63F2D39802A001B479F /* NotYourMom */,
 				4BCEA6502D39802C001B479F /* NotYourMomTests */,
 				4BCEA65A2D39802C001B479F /* NotYourMomUITests */,
+				4B22A16D2D3F3BAE00B1A490 /* RudePomoWidget */,
+				4B22A1682D3F3BAE00B1A490 /* Frameworks */,
 				4BCEA63E2D39802A001B479F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -106,6 +176,7 @@
 				4BCEA63D2D39802A001B479F /* NotYourMom.app */,
 				4BCEA64D2D39802C001B479F /* NotYourMomTests.xctest */,
 				4BCEA6572D39802C001B479F /* NotYourMomUITests.xctest */,
+				4B22A1672D3F3BAE00B1A490 /* RudePomoWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,6 +184,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4B22A1812D3F3BB000B1A490 /* Build configuration list for PBXNativeTarget "RudePomoWidgetExtension" */;
+			buildPhases = (
+				4B22A1632D3F3BAE00B1A490 /* Sources */,
+				4B22A1642D3F3BAE00B1A490 /* Frameworks */,
+				4B22A1652D3F3BAE00B1A490 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				4B22A16D2D3F3BAE00B1A490 /* RudePomoWidget */,
+			);
+			name = RudePomoWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = RudePomoWidgetExtension;
+			productReference = 4B22A1672D3F3BAE00B1A490 /* RudePomoWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		4BCEA63C2D39802A001B479F /* NotYourMom */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4BCEA6612D39802C001B479F /* Build configuration list for PBXNativeTarget "NotYourMom" */;
@@ -120,10 +213,12 @@
 				4BCEA6392D39802A001B479F /* Sources */,
 				4BCEA63A2D39802A001B479F /* Frameworks */,
 				4BCEA63B2D39802A001B479F /* Resources */,
+				4B22A17E2D3F3BB000B1A490 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4B22A17C2D3F3BB000B1A490 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4BCEA63F2D39802A001B479F /* NotYourMom */,
@@ -192,6 +287,9 @@
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					4B22A1662D3F3BAE00B1A490 = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					4BCEA63C2D39802A001B479F = {
 						CreatedOnToolsVersion = 16.1;
 					};
@@ -225,11 +323,19 @@
 				4BCEA63C2D39802A001B479F /* NotYourMom */,
 				4BCEA64C2D39802C001B479F /* NotYourMomTests */,
 				4BCEA6562D39802C001B479F /* NotYourMomUITests */,
+				4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4B22A1652D3F3BAE00B1A490 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4BCEA63B2D39802A001B479F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -254,6 +360,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4B22A1632D3F3BAE00B1A490 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4BCEA6392D39802A001B479F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -278,6 +391,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4B22A17C2D3F3BB000B1A490 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */;
+			targetProxy = 4B22A17B2D3F3BB000B1A490 /* PBXContainerItemProxy */;
+		};
 		4BCEA64F2D39802C001B479F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4BCEA63C2D39802A001B479F /* NotYourMom */;
@@ -291,6 +409,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4B22A17F2D3F3BB000B1A490 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 473BWG9258;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RudePomoWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RudePomoWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Gokul.NotYourMom.RudePomoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4B22A1802D3F3BB000B1A490 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 473BWG9258;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RudePomoWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RudePomoWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Gokul.NotYourMom.RudePomoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		4BCEA65F2D39802C001B479F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -553,6 +725,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4B22A1812D3F3BB000B1A490 /* Build configuration list for PBXNativeTarget "RudePomoWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B22A17F2D3F3BB000B1A490 /* Debug */,
+				4B22A1802D3F3BB000B1A490 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4BCEA6382D39802A001B479F /* Build configuration list for PBXProject "NotYourMom" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -5,6 +5,7 @@
 //  Created by Gokul P on 1/18/25.
 //
 
+import ActivityKit
 import Combine
 import Foundation
 import Observation
@@ -20,8 +21,9 @@ extension HomeScreen {
         private var countdownTimer: Timer?
 
         // MARK: - Properties
-        
-        var isMute: Bool = true
+
+        var activity: Activity<RudePomoWidgetAttributes>?
+        var isMute = true
         var timerTime: Int? = 10
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
@@ -38,13 +40,24 @@ extension HomeScreen {
             }
         }
 
-        init(musicManager: MusicServiceProtocol = MusicManager(), motionManager: PhoneMotionManager = PhoneMotionManager()) {
+        init(
+            musicManager: MusicServiceProtocol = MusicManager(),
+            motionManager: PhoneMotionManager = PhoneMotionManager()
+        ) {
             self.musicManager = musicManager
             self.motionManager = motionManager
             setInitialValues()
+            setObservers()
         }
 
         // MARK: - Monitoring Control
+
+        /// Needs refactoring
+        func setObservers() {
+            motionManager.onDetectingMotion = { currentState in
+                print("The state now is \(currentState)")
+            }
+        }
 
         func setSelectedDuration() {
             selectedDuration = Double(timerTime ?? 10) * 60
@@ -57,7 +70,7 @@ extension HomeScreen {
                 remainingTime = selectedDuration
             }
         }
-        
+
         func toggleAudioMute() {
             isMute.toggle()
             Task {
@@ -75,6 +88,7 @@ extension HomeScreen {
             remainingTime = selectedDuration
 
             await musicManager.startPlayback()
+            startLiveActivity()
 
             // Then start motion detection
             motionManager.startMonitoring()
@@ -110,19 +124,48 @@ extension HomeScreen {
 
             // Stop background task
             await musicManager.stopPlayback()
+            stopLiveActivity()
 
             // Clean up timer
             countdownTimer?.invalidate()
             countdownTimer = nil
-            print("✅ Monitoring session stopped")
+//            print("✅ Monitoring session stopped")
+//
+//            let content = UNMutableNotificationContent()
+//            content.title = "Monitoring Stopped"
+//            content.body = "The background monitoring duration has ended."
+//            content.sound = .default
+//
+//            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+//            try? await UNUserNotificationCenter.current().add(request)
+        }
 
-            let content = UNMutableNotificationContent()
-            content.title = "Monitoring Stopped"
-            content.body = "The background monitoring duration has ended."
-            content.sound = .default
+        // MARK: - Live activity controls
 
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-            try? await UNUserNotificationCenter.current().add(request)
+        func startLiveActivity() {
+            let adventure = RudePomoWidgetAttributes(name: "hero")
+            let initialState = RudePomoWidgetAttributes.ContentState(emoji: "Started 😎")
+            let content = ActivityContent(state: initialState, staleDate: nil, relevanceScore: 0.0)
+            do {
+                activity = try Activity.request(
+                    attributes: adventure,
+                    content: content,
+                    pushType: nil
+                )
+            } catch {
+                print("Couldn't start the activity!!! \(error.localizedDescription)")
+            }
+        }
+
+        func stopLiveActivity() {
+            Task {
+                let finalContent = RudePomoWidgetAttributes.ContentState(emoji: "Ended 🥶")
+                let dismissalPolicy: ActivityUIDismissalPolicy = .default
+                await activity?.end(
+                    ActivityContent(state: finalContent, staleDate: nil),
+                    dismissalPolicy: dismissalPolicy
+                )
+            }
         }
 
         // MARK: - Time Formatting

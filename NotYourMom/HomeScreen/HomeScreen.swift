@@ -5,6 +5,7 @@
 //  Created by Gokul P on 1/18/25.
 //
 
+import ActivityKit
 import RiveRuntime
 import SwiftUI
 

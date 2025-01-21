@@ -24,6 +24,8 @@ class PhoneMotionManager {
     var isMonitoring = false
     private var lastNotificationTime = Date()
     private let minimumTimeBetweenNotifications: TimeInterval = 6 // 5 seconds cooldown
+    
+    var onDetectingMotion: ((PhoneState) -> Void)?
 
     init() {
         setupMotionDetection()
@@ -80,7 +82,8 @@ class PhoneMotionManager {
         }
 
         if oldState != currentState {
-            handleStateChange(currentState)
+            onDetectingMotion?(currentState)
+//            handleStateChange(currentState)
         }
     }
 
