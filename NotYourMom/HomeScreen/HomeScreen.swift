@@ -64,7 +64,7 @@ extension HomeScreen {
         Text(viewModel.remainingTime.formattedRemainingTime)
             .font(.system(size: 60, weight: .bold, design: .monospaced))
             .foregroundStyle(.white)
-            .contentTransition(.numericText())
+            .contentTransition(viewModel.currentState != .running ? .identity : .numericText())
     }
 
     var actionButton: some View {
