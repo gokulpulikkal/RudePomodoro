@@ -13,25 +13,31 @@ import SwiftUI
 struct HomeScreen: View {
     @State var viewModel = ViewModel()
 
-    let rivAnimModel = RiveViewModel(fileName: "pomodoro_app_mob", stateMachineName: "State Machine")
+    let rivAnimModel = RiveViewModel(fileName: "pomoNoBG", stateMachineName: "State Machine")
 
     var body: some View {
         ZStack {
-            rivAnimation
+            RadialGradientView()
+            
             VStack {
-                timerText
-                    .onTapGesture {
-                        withAnimation(.easeInOut) {
-                            if viewModel.currentState == .idle {
-                                viewModel.isTimerEditing = true
+                rivAnimation
+                    .frame(width: 300, height: 300)
+                    .offset(x: 50)
+                
+                VStack {
+                    timerText
+                        .onTapGesture {
+                            withAnimation(.easeInOut) {
+                                if viewModel.currentState == .idle {
+                                    viewModel.isTimerEditing = true
+                                }
                             }
                         }
-                    }
-                actionButton
+                    actionButton
+                }
+                .opacity(viewModel.isTimerEditing ? 0 : 1)
+                .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
             }
-            .padding(.top, 330)
-            .opacity(viewModel.isTimerEditing ? 0 : 1)
-            .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
 
             timeSelectorView
                 .padding(.top, 330)
