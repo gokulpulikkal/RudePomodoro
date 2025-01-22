@@ -17,51 +17,31 @@ struct HomeScreen: View {
 
     var body: some View {
         ZStack {
-            RadialGradientView()
-            
             VStack {
                 rivAnimation
                     .frame(width: 300, height: 300)
-                    .offset(x: 50)
-                
-                VStack {
-                    timerText
-                        .onTapGesture {
-                            withAnimation(.easeInOut) {
-                                if viewModel.currentState == .idle {
-                                    viewModel.isTimerEditing = true
+                ZStack {
+                    VStack {
+                        timerText
+                            .onTapGesture {
+                                withAnimation(.easeInOut) {
+                                    if viewModel.currentState == .idle {
+                                        viewModel.isTimerEditing = true
+                                    }
                                 }
                             }
-                        }
-                    actionButton
+                        actionButton
+                    }
+                    .opacity(viewModel.isTimerEditing ? 0 : 1)
+                    .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
+                    timeSelectorView
+                        .opacity(viewModel.isTimerEditing ? 1 : 0)
+                        .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
                 }
-                .opacity(viewModel.isTimerEditing ? 0 : 1)
-                .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
             }
-
-            timeSelectorView
-                .padding(.top, 330)
-                .opacity(viewModel.isTimerEditing ? 1 : 0)
-                .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        viewModel.toggleAudioMute()
-                    }, label: {
-                        Image(systemName: viewModel.isMute ? "speaker.slash" : "speaker")
-                            .font(.system(size: 30))
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .contentTransition(.symbolEffect(.replace))
-                    })
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 200)
-                }
-                .padding()
-            }
+            musicToggle
         }
+        .background(RadialGradientView())
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
         .onChange(of: viewModel.currentState) {
@@ -75,7 +55,6 @@ extension HomeScreen {
         rivAnimModel.view()
             .ignoresSafeArea()
             .aspectRatio(contentMode: .fill)
-            .offset(x: -50)
             .ignoresSafeArea()
     }
 
@@ -121,6 +100,26 @@ extension HomeScreen {
             .padding()
             .background(.thinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 25))
+        }
+    }
+
+    var musicToggle: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    viewModel.toggleAudioMute()
+                }, label: {
+                    Image(systemName: viewModel.isMute ? "speaker.slash" : "speaker")
+                        .font(.system(size: 30))
+                        .frame(width: 30, height: 30, alignment: .center)
+                        .contentTransition(.symbolEffect(.replace))
+                })
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+            }
+            .padding()
         }
     }
 

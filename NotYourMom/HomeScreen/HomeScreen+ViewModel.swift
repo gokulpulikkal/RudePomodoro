@@ -181,7 +181,8 @@ extension HomeScreen {
             let adventure = RudePomoWidgetAttributes(name: "hero")
             let initialState = RudePomoWidgetAttributes.ContentState(
                 startDate: startDate,
-                timerDuration: selectedDuration
+                timerDuration: selectedDuration,
+                liveActivityMessage: .init(title: "Pomo is sleeping", body: "")
             )
             let content = ActivityContent(state: initialState, staleDate: nil, relevanceScore: 0.0)
             do {
@@ -196,8 +197,18 @@ extension HomeScreen {
         }
 
         func stopLiveActivity() {
+            let liveActivityMessage: LiveActivityMessage = currentState == .stopped
+                ? .init(
+                    title: "Pomo is Angry",
+                    body: "You interrupted his sleep"
+                )
+                : .init(title: "Pomo is Happy", body: "You did a great job!")
             Task {
-                let finalContent = RudePomoWidgetAttributes.ContentState(timerDuration: selectedDuration, isDone: true)
+                let finalContent = RudePomoWidgetAttributes.ContentState(
+                    timerDuration: selectedDuration,
+                    isDone: true,
+                    liveActivityMessage: liveActivityMessage
+                )
                 let dismissalPolicy: ActivityUIDismissalPolicy = .default
                 await activity?.end(
                     ActivityContent(state: finalContent, staleDate: nil),

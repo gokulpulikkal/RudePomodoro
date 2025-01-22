@@ -15,6 +15,7 @@ struct RudePomoWidgetAttributes: ActivityAttributes {
         var startDate: Date?
         var timerDuration: TimeInterval?
         var isDone: Bool?
+        var liveActivityMessage: LiveActivityMessage?
     }
 
     /// Fixed non-changing properties about your activity go here!
@@ -28,11 +29,12 @@ struct RudePomoWidgetLiveActivity: Widget {
             ZStack {
                 Color(hex: "5E2929")
                 if context.state.isDone != true, let startDate = context.state.startDate,
-                   let duration = context.state.timerDuration
+                   let duration = context.state.timerDuration,
+                   let liveActivityMessage = context.state.liveActivityMessage
                 {
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Pomo is Sleeping")
+                            Text(liveActivityMessage.title)
                                 .foregroundStyle(.white)
                                 .font(.system(size: 20))
                                 .bold()
@@ -47,22 +49,18 @@ struct RudePomoWidgetLiveActivity: Widget {
                         // TODO: Maybe show sleeping pomo animation with riv
                     }
                     .padding()
-                } else if context.state.isDone == true, let duration = context.state.timerDuration {
+                } else if context.state.isDone == true, let liveActivityMessage = context.state.liveActivityMessage {
                     HStack {
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("ooh Pomo is Happy")
+                            Text(liveActivityMessage.title)
                                 .foregroundStyle(.white)
                                 .font(.system(size: 20))
                                 .bold()
                                 .opacity(0.7)
-                            Text("You did a great Job")
+                            Text(liveActivityMessage.body)
                                 .foregroundStyle(.white)
                                 .font(.system(size: 30))
                                 .bold()
-//                            Text(duration.formattedRemainingTime)
-//                                .foregroundStyle(.white)
-//                                .font(.system(size: 50))
-//                                .bold()
                         }
                         Spacer()
                         // TODO: Maybe show sleeping pomo animation with riv
@@ -83,10 +81,11 @@ struct RudePomoWidgetLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     if context.state.isDone != true, let startDate = context.state.startDate,
-                       let duration = context.state.timerDuration
+                       let duration = context.state.timerDuration,
+                       let liveActivityMessage = context.state.liveActivityMessage
                     {
                         VStack(alignment: .leading) {
-                            Text("Pomo is Sleeping")
+                            Text(liveActivityMessage.title)
                                 .foregroundStyle(.white)
                                 .font(.system(size: 20))
                                 .bold()
@@ -100,12 +99,7 @@ struct RudePomoWidgetLiveActivity: Widget {
                         }
                     }
                 }
-            } compactLeading: {
-                if let startDate = context.state.startDate, let duration = context.state.timerDuration {
-                    // TODO: Maybe show sleeping pomo animation with riv
-                    Text("L")
-                }
-            } compactTrailing: {
+            } compactLeading: {} compactTrailing: {
                 if let startDate = context.state.startDate, let duration = context.state.timerDuration {
                     ProgressView(
                         timerInterval: Date.now...Date(timeInterval: duration, since: startDate),
@@ -148,7 +142,12 @@ extension RudePomoWidgetAttributes {
 
 extension RudePomoWidgetAttributes.ContentState {
     fileprivate static var smiley: RudePomoWidgetAttributes.ContentState {
-        RudePomoWidgetAttributes.ContentState(startDate: .now, timerDuration: 1 * 60, isDone: true)
+        RudePomoWidgetAttributes.ContentState(
+            startDate: .now,
+            timerDuration: 1 * 60,
+            isDone: true,
+            liveActivityMessage: .init(title: "Pomo is Angry", body: "You interrupted his sleep")
+        )
     }
 }
 

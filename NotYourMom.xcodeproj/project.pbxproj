@@ -81,6 +81,7 @@
 				CustomStyles/GaugeProgressStyle.swift,
 				"Extensions/Double+Extensions.swift",
 				LaunchScreen/RadialGradientView.swift,
+				Models/LiveActivityMessage.swift,
 				pomoNoBG.riv,
 			);
 			target = 4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */;

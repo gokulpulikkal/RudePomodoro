@@ -62,6 +62,6 @@ struct TimePickerView: View {
 // Preview remains the same
 
 #Preview {
-    TimePickerView(position: .constant(30))
+    TimePickerView(position: .constant(20))
         .background(.blue)
 }
