@@ -17,6 +17,7 @@ struct RadialGradientView: View {
 
     var body: some View {
         ZStack {
+            let size = max(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
             Color(hex: "5E2929")
             Circle()
                 .fill(
@@ -27,7 +28,7 @@ struct RadialGradientView: View {
                         endRadius: 400
                     )
                 )
-                .frame(width: 1400, height: 1400)
+                .frame(width: size*2, height: size*2)
         }
         .ignoresSafeArea()
     }
