@@ -74,7 +74,7 @@ extension HomeScreen {
     }
 
     var timerText: some View {
-        Text(viewModel.formattedRemainingTime)
+        Text(viewModel.remainingTime.formattedRemainingTime)
             .font(.system(size: 60, weight: .bold, design: .monospaced))
             .foregroundStyle(.white)
             .contentTransition(.numericText())

@@ -24,7 +24,7 @@ class PhoneMotionManager {
     var isMonitoring = false
     private var lastNotificationTime = Date()
     private let minimumTimeBetweenNotifications: TimeInterval = 6 // 5 seconds cooldown
-    
+
     var onDetectingMotion: ((PhoneState) -> Void)?
 
     init() {
@@ -83,22 +83,6 @@ class PhoneMotionManager {
 
         if oldState != currentState {
             onDetectingMotion?(currentState)
-//            handleStateChange(currentState)
-        }
-    }
-
-    private func handleStateChange(_ state: PhoneState) {
-        // Check if enough time has passed since last notification
-        let now = Date()
-        guard now.timeIntervalSince(lastNotificationTime) >= minimumTimeBetweenNotifications else {
-            return
-        }
-
-        // Only send notification when phone is lifted
-        if state == .lifted {
-            print("The notification is about to send! for state \(state)")
-            NotificationManager.shared.sendNotification(for: state)
-            lastNotificationTime = now
         }
     }
 

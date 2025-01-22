@@ -6,16 +6,18 @@
 //
 
 import ActivityKit
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 struct RudePomoWidgetAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
-        var emoji: String
+        var startDate: Date?
+        var timerDuration: TimeInterval?
+        var isDone: Bool?
     }
 
-    // Fixed non-changing properties about your activity go here!
+    /// Fixed non-changing properties about your activity go here!
     var name: String
 }
 
@@ -23,34 +25,116 @@ struct RudePomoWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: RudePomoWidgetAttributes.self) { context in
             // Lock screen/banner UI goes here
-            VStack {
-                Text("Hello \(context.state.emoji)")
+            ZStack {
+                Color(hex: "5E2929")
+                if context.state.isDone != true, let startDate = context.state.startDate,
+                   let duration = context.state.timerDuration
+                {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Pomo is Sleeping")
+                                .foregroundStyle(.white)
+                                .font(.system(size: 20))
+                                .bold()
+                                .opacity(0.7)
+                            Text(
+                                timerInterval: Date.now...Date(timeInterval: duration, since: startDate)
+                            )
+                            .foregroundStyle(.white)
+                            .font(.system(size: 50))
+                            .bold()
+                        }
+                        // TODO: Maybe show sleeping pomo animation with riv
+                    }
+                    .padding()
+                } else if context.state.isDone == true, let duration = context.state.timerDuration {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("ooh Pomo is Happy")
+                                .foregroundStyle(.white)
+                                .font(.system(size: 20))
+                                .bold()
+                                .opacity(0.7)
+                            Text("You did a great Job")
+                                .foregroundStyle(.white)
+                                .font(.system(size: 30))
+                                .bold()
+//                            Text(duration.formattedRemainingTime)
+//                                .foregroundStyle(.white)
+//                                .font(.system(size: 50))
+//                                .bold()
+                        }
+                        Spacer()
+                        // TODO: Maybe show sleeping pomo animation with riv
+                    }
+                    .padding()
+                }
             }
-            .activityBackgroundTint(Color.cyan)
+            .frame(height: 150)
             .activitySystemActionForegroundColor(Color.black)
 
         } dynamicIsland: { context in
             DynamicIsland {
                 // Expanded UI goes here.  Compose the expanded UI through
                 // various regions, like leading/trailing/center/bottom
-                DynamicIslandExpandedRegion(.leading) {
-                    Text("Leading")
-                }
+                DynamicIslandExpandedRegion(.leading) {}
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text("Trailing")
+                    // TODO: Maybe show sleeping pomo animation with riv
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    Text("Bottom \(context.state.emoji)")
-                    // more content
+                    if context.state.isDone != true, let startDate = context.state.startDate,
+                       let duration = context.state.timerDuration
+                    {
+                        VStack(alignment: .leading) {
+                            Text("Pomo is Sleeping")
+                                .foregroundStyle(.white)
+                                .font(.system(size: 20))
+                                .bold()
+                                .opacity(0.7)
+                            Text(
+                                timerInterval: Date.now...Date(timeInterval: duration, since: startDate)
+                            )
+                            .foregroundStyle(.white)
+                            .font(.system(size: 50))
+                            .bold()
+                        }
+                    }
                 }
             } compactLeading: {
-                Text("L")
+                if let startDate = context.state.startDate, let duration = context.state.timerDuration {
+                    // TODO: Maybe show sleeping pomo animation with riv
+                    Text("L")
+                }
             } compactTrailing: {
-                Text("T \(context.state.emoji)")
+                if let startDate = context.state.startDate, let duration = context.state.timerDuration {
+                    ProgressView(
+                        timerInterval: Date.now...Date(timeInterval: duration, since: startDate),
+                        countsDown: true,
+                        label: {},
+                        currentValueLabel: {
+                            // Text or Image or whatever you want
+                        }
+                    )
+                    .progressViewStyle(.circular)
+                    .tint(.red)
+                    .frame(height: 24)
+                }
             } minimal: {
-                Text(context.state.emoji)
+                if let startDate = context.state.startDate, let duration = context.state.timerDuration {
+                    ProgressView(
+                        timerInterval: Date.now...Date(timeInterval: duration, since: startDate),
+                        countsDown: true,
+                        label: {},
+                        currentValueLabel: {
+                            // Text or Image or whatever you want
+                        }
+                    )
+                    .progressViewStyle(.circular)
+                    .tint(.red)
+                    .frame(height: 24)
+                }
             }
-            .widgetURL(URL(string: "http://www.apple.com"))
+//            .widgetURL(URL(string: "http://www.apple.com"))
             .keylineTint(Color.red)
         }
     }
@@ -64,17 +148,12 @@ extension RudePomoWidgetAttributes {
 
 extension RudePomoWidgetAttributes.ContentState {
     fileprivate static var smiley: RudePomoWidgetAttributes.ContentState {
-        RudePomoWidgetAttributes.ContentState(emoji: "😀")
-     }
-     
-     fileprivate static var starEyes: RudePomoWidgetAttributes.ContentState {
-         RudePomoWidgetAttributes.ContentState(emoji: "🤩")
-     }
+        RudePomoWidgetAttributes.ContentState(startDate: .now, timerDuration: 1 * 60, isDone: true)
+    }
 }
 
 #Preview("Notification", as: .content, using: RudePomoWidgetAttributes.preview) {
-   RudePomoWidgetLiveActivity()
+    RudePomoWidgetLiveActivity()
 } contentStates: {
     RudePomoWidgetAttributes.ContentState.smiley
-    RudePomoWidgetAttributes.ContentState.starEyes
 }

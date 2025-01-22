@@ -9,7 +9,6 @@ import Foundation
 import UserNotifications
 
 class NotificationManager {
-    static let shared = NotificationManager()
 
     private let messages = [
         "Shouldn't you be working right now?",
@@ -22,16 +21,14 @@ class NotificationManager {
         "This isn't helping your productivity!"
     ]
 
-    private init() {}
-
     func requestPermission() async throws -> Bool {
         try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .criticalAlert])
     }
 
-    func sendNotification(for state: PhoneMotionManager.PhoneState) {
+    func sendRudeNotification() {
         let content = UNMutableNotificationContent()
-        content.title = "Motion Alert"
-        content.body = state == .lifted ? messages.randomElement() ?? "Stay focused!" : "Phone placed down"
+        content.title = "Stay focused!"
+        content.body = messages.randomElement() ?? "Stay focused!"
         content.sound = .default
         content.interruptionLevel = .critical
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)

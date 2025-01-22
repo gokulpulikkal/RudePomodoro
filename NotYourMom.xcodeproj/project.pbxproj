@@ -75,6 +75,16 @@
 			);
 			target = 4BCEA63C2D39802A001B479F /* NotYourMom */;
 		};
+		4B22A1CE2D4033B600B1A490 /* Exceptions for "NotYourMom" folder in "RudePomoWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CustomStyles/GaugeProgressStyle.swift,
+				"Extensions/Double+Extensions.swift",
+				LaunchScreen/RadialGradientView.swift,
+				pomoNoBG.riv,
+			);
+			target = 4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */;
+		};
 		4BCEA6782D39D921001B479F /* Exceptions for "NotYourMom" folder in "NotYourMom" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -98,6 +108,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				4BCEA6782D39D921001B479F /* Exceptions for "NotYourMom" folder in "NotYourMom" target */,
+				4B22A1CE2D4033B600B1A490 /* Exceptions for "NotYourMom" folder in "RudePomoWidgetExtension" target */,
 			);
 			path = NotYourMom;
 			sourceTree = "<group>";
