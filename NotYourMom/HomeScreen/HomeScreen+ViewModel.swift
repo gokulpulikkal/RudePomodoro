@@ -81,6 +81,7 @@ extension HomeScreen {
         func setInitialValues() {
             Task { @MainActor in
                 currentState = .idle
+                selectedDuration = Double(timerTime ?? 10) * 60
                 remainingTime = selectedDuration
                 startDate = nil
                 lastUpdate = nil
