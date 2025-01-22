@@ -37,7 +37,7 @@ struct TimePickerView: View {
                             .foregroundStyle(.white)
                     }
                     .foregroundStyle(.white)
-                    .offset(x: 2, y: 15)
+                    .offset(x: 1, y: 15)
                 }
                 .scrollPosition(id: .init(get: {
                     let position: Int? = isLoaded ? position : nil
@@ -47,7 +47,7 @@ struct TimePickerView: View {
                         position = val
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     }
-                }))
+                }), anchor: .leading)
                 .safeAreaPadding(.horizontal, horizontalPadding)
             }
             .onAppear {

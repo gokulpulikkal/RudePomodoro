@@ -28,8 +28,8 @@ extension HomeScreen {
         var timerTime: Int? = 10
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
-        var selectedDuration: TimeInterval = 25 * 60 // Default 10 minutes
-        var remainingTime: TimeInterval = 25 * 60
+        var selectedDuration: TimeInterval = 10 * 60 // Default 10 minutes
+        var remainingTime: TimeInterval = 10 * 60
         var startDate: Date?
         var lastUpdate: Date?
 
@@ -105,6 +105,7 @@ extension HomeScreen {
             remainingTime = selectedDuration
             startDate = Date()
             lastUpdate = Date()
+            isMute = true
 
             await musicManager.startPlayback()
             startLiveActivity()
@@ -142,6 +143,7 @@ extension HomeScreen {
             motionManager.stopMonitoring()
 
             // Stop background task
+            isMute = true
             await musicManager.stopPlayback()
             stopLiveActivity()
 

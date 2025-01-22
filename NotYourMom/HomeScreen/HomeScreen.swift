@@ -40,8 +40,12 @@ struct HomeScreen: View {
                 }
             }
             musicToggle
+                .disabled(viewModel.currentState != .running)
         }
-        .background(RadialGradientView())
+        .background(
+            RadialGradientView()
+                .ignoresSafeArea()
+        )
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
         .onChange(of: viewModel.currentState) {
@@ -53,9 +57,7 @@ struct HomeScreen: View {
 extension HomeScreen {
     var rivAnimation: some View {
         rivAnimModel.view()
-            .ignoresSafeArea()
-            .aspectRatio(contentMode: .fill)
-            .ignoresSafeArea()
+            .aspectRatio(contentMode: .fit)
     }
 
     var timerText: some View {

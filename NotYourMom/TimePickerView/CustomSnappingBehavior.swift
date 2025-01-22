@@ -15,6 +15,7 @@ struct CustomSnappingBehavior: ScrollTargetBehavior {
 
         let itemWidth: CGFloat = 15 // Width of item + spacing
         let snapPoint = round(itemValue / (itemWidth * 5)) * (itemWidth * 5)
-        target.rect.origin.x = snapPoint
+        // special handling for not setting the 0
+        target.rect.origin.x = snapPoint == 0 ? 75: snapPoint
     }
 }

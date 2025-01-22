@@ -30,6 +30,7 @@ actor MusicManager: MusicServiceProtocol {
         do {
             avPlayer = try AVAudioPlayer(contentsOf: url)
             avPlayer?.numberOfLoops = -1
+            avPlayer?.setVolume(0, fadeDuration: 0)
             avPlayer?.play()
         } catch {
             print("couldn't load file :(")
