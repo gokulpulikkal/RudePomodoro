@@ -62,7 +62,7 @@ extension HomeScreen {
 
     var timerText: some View {
         Text(viewModel.remainingTime.formattedRemainingTime)
-            .font(.system(size: 60, weight: .bold, design: .monospaced))
+            .font(.sourGummy(.bold, size: 60))
             .foregroundStyle(.white)
             .contentTransition(viewModel.currentState != .running ? .identity : .numericText())
     }
@@ -95,7 +95,7 @@ extension HomeScreen {
                 viewModel.setSelectedDuration()
             }, label: {
                 Text("Done")
-                    .font(.system(size: 20))
+                    .font(.sourGummy(.regular, size: 20))
                     .bold()
                     .foregroundStyle(.white)
             })

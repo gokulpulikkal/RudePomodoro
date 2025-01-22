@@ -36,14 +36,14 @@ struct RudePomoWidgetLiveActivity: Widget {
                         VStack(alignment: .leading) {
                             Text(liveActivityMessage.title)
                                 .foregroundStyle(.white)
-                                .font(.system(size: 20))
+                                .font(.sourGummy(.regular, size: 20))
                                 .bold()
                                 .opacity(0.7)
                             Text(
                                 timerInterval: Date.now...Date(timeInterval: duration, since: startDate)
                             )
                             .foregroundStyle(.white)
-                            .font(.system(size: 50))
+                            .font(.sourGummy(.medium, size: 40))
                             .bold()
                         }
                         // TODO: Maybe show sleeping pomo animation with riv
@@ -54,12 +54,12 @@ struct RudePomoWidgetLiveActivity: Widget {
                         VStack(alignment: .leading, spacing: 10) {
                             Text(liveActivityMessage.title)
                                 .foregroundStyle(.white)
-                                .font(.system(size: 20))
+                                .font(.sourGummy(.regular, size: 20))
                                 .bold()
                                 .opacity(0.7)
                             Text(liveActivityMessage.body)
                                 .foregroundStyle(.white)
-                                .font(.system(size: 30))
+                                .font(.sourGummy(.medium, size: 30))
                                 .bold()
                         }
                         Spacer()
@@ -87,14 +87,14 @@ struct RudePomoWidgetLiveActivity: Widget {
                         VStack(alignment: .leading) {
                             Text(liveActivityMessage.title)
                                 .foregroundStyle(.white)
-                                .font(.system(size: 20))
+                                .font(.sourGummy(.regular, size: 20))
                                 .bold()
                                 .opacity(0.7)
                             Text(
                                 timerInterval: Date.now...Date(timeInterval: duration, since: startDate)
                             )
                             .foregroundStyle(.white)
-                            .font(.system(size: 50))
+                            .font(.sourGummy(.medium, size: 40))
                             .bold()
                         }
                     }

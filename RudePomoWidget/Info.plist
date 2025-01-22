@@ -7,5 +7,11 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SourGummy_SemiExpanded-Bold.ttf</string>
+		<string>SourGummy_SemiExpanded-Medium.ttf</string>
+		<string>SourGummy_SemiExpanded-Regular.ttf</string>
+	</array>
 </dict>
 </plist>

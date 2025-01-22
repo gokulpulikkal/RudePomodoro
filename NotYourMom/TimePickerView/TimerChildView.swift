@@ -21,7 +21,7 @@ struct TimerChildView: View {
                 if reminder == 0 {
                     Text("\(value)")
                         .foregroundStyle(getColor(value: value, currentPosition: position))
-                        .font(.system(size: 30))
+                        .font(.sourGummy(.regular, size: 30))
                         .bold()
                         .scaleEffect(getScale(value: value, currentPosition: position))
                         .fixedSize()
