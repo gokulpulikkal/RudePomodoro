@@ -16,8 +16,7 @@ struct LaunchScreen: View {
                     RadialGradientView()
                     Text("Rude Pomo")
                         .foregroundStyle(.white)
-                        .font(.system(size: 50))
-                        .bold()
+                        .font(.sourGummy(.bold, size: 50))
                 }
                     .transition(.opacity)
                     .task {
