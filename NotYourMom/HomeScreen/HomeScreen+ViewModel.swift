@@ -49,7 +49,7 @@ extension HomeScreen {
             case .idle:
                 "Pomo’s chilling right now, but you should get to work before it judges you."
             case .running:
-                "Shhh... Pomo’s in a deep nap. Don’t make it mad!"
+                "Shhh... Pomo’s in a deep nap. Don’t make it mad! Put your phone down and do some work"
             case .stopped:
                 "Rude! You woke Pomo up! It’s giving you side-eye right now."
             case .finished:
