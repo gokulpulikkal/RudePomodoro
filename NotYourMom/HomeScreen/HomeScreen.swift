@@ -18,24 +18,7 @@ struct HomeScreen: View {
     var body: some View {
         ZStack {
             VStack {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .stroke(lineWidth: 5)
-                        .fill(Color(hex: "5E2929"))
-                        .shadow(color: .gray.opacity(0.3), radius: 10, x: 0, y: 5)
-
-                    TypewriterView(text: viewModel.pomoMessage, typingDelay: .milliseconds(15))
-                        .multilineTextAlignment(.center)
-//                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .font(.sourGummy(.medium, size: 20))
-                        .foregroundStyle(.white)
-                        .padding(5)
-                }
-                .frame(width: 300, height: 100)
-                Spacer()
-            }
-            .padding(.top)
-            VStack {
+                infoText
                 rivAnimation
                     .frame(width: 300, height: 300)
                 ZStack {
@@ -60,6 +43,7 @@ struct HomeScreen: View {
             musicToggle
                 .disabled(viewModel.currentState != .running)
         }
+        .padding()
         .background(
             RadialGradientView()
                 .ignoresSafeArea()
@@ -73,6 +57,26 @@ struct HomeScreen: View {
 }
 
 extension HomeScreen {
+    var infoText: some View {
+        VStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(.white, lineWidth: 5)
+                    .fill(Color(hex: "5E2929"))
+                    .shadow(color: .gray.opacity(0.3), radius: 10, x: 0, y: 5)
+
+                TypewriterView(text: viewModel.pomoMessage, typingDelay: .milliseconds(15))
+                    .multilineTextAlignment(.center)
+//                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .font(.sourGummy(.medium, size: 20))
+                    .foregroundStyle(.white)
+                    .padding(5)
+            }
+            .frame(width: 300, height: 100)
+            Spacer()
+        }
+    }
+
     var rivAnimation: some View {
         rivAnimModel.view()
             .aspectRatio(contentMode: .fit)
@@ -171,6 +175,9 @@ extension HomeScreen {
     }
 }
 
-#Preview {
-    HomeScreen()
+struct HomeScreen_Preview: PreviewProvider {
+    static var previews: some View {
+        HomeScreen()
+            .previewDevice("iPhone 12")
+    }
 }
