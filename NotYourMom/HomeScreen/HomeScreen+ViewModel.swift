@@ -47,13 +47,16 @@ extension HomeScreen {
         var pomoMessage: String {
             switch currentState {
             case .idle:
-                "Let Pomo sleep here and you focus on your work"
+                "Pomo’s chilling right now, but you should get to work before it judges you."
             case .running:
-                "Pomo is sleeping don't interrupt his sleep"
-            case .stopped, .finished:
-                "Oho !! You interrupted his sleep"
+                "Shhh... Pomo’s in a deep nap. Don’t make it mad!"
+            case .stopped:
+                "Rude! You woke Pomo up! It’s giving you side-eye right now."
+            case .finished:
+                "Boom! Pomo’s feeling fresh and fabulous after that nap. Well done!"
             }
         }
+
 
         init(
             musicManager: MusicServiceProtocol = MusicManager(),

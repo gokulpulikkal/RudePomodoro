@@ -59,22 +59,22 @@ struct HomeScreen: View {
 extension HomeScreen {
     var infoText: some View {
         VStack {
-            ZStack {
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(.white, lineWidth: 5)
-                    .fill(Color(hex: "5E2929"))
-                    .shadow(color: .gray.opacity(0.3), radius: 10, x: 0, y: 5)
-
-                TypewriterView(text: viewModel.pomoMessage, typingDelay: .milliseconds(15))
-                    .multilineTextAlignment(.center)
+            TypewriterView(text: viewModel.pomoMessage, typingDelay: .milliseconds(15))
+                .multilineTextAlignment(.center)
 //                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .font(.sourGummy(.medium, size: 20))
-                    .foregroundStyle(.white)
-                    .padding(5)
-            }
-            .frame(width: 300, height: 100)
-            Spacer()
+                .frame(maxWidth: 400)
+                .font(.sourGummy(.medium, size: 20))
+                .foregroundStyle(.white)
+                .padding()
+                .background {
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(.white, lineWidth: 5)
+                        .fill(Color(hex: "5E2929"))
+                        .shadow(color: .gray.opacity(0.3), radius: 10, x: 0, y: 5)
+                }
         }
+        .frame(height: 150)
+        .padding(.horizontal)
     }
 
     var rivAnimation: some View {
