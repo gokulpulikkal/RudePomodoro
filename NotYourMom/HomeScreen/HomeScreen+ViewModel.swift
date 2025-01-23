@@ -43,6 +43,17 @@ extension HomeScreen {
                 "Reset"
             }
         }
+        
+        var pomoMessage: String {
+            switch currentState {
+            case .idle:
+                "Let Pomo sleep here and you focus on your work"
+            case .running:
+                "Pomo is sleeping don't interrupt his sleep"
+            case .stopped, .finished:
+                "Oho !! You interrupted his sleep"
+            }
+        }
 
         init(
             musicManager: MusicServiceProtocol = MusicManager(),
