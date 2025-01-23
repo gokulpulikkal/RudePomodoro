@@ -71,19 +71,14 @@ extension HomeScreen {
         Button(action: {
             handleActionButtons()
         }, label: {
-            Circle()
-                .fill(Color.red.opacity(0.9))
-                .frame(width: 60, height: 60)
-                .overlay(
-                    Image(systemName: viewModel.currentSymbol)
-                        .font(.system(size: 30))
-                        .foregroundColor(.white)
-                        .offset(x: viewModel.currentSymbol == "play.fill" ? 2 : 0)
-                        .bold()
-                        .contentTransition(.symbolEffect(.replace.downUp))
-                )
+            Text(viewModel.currentSymbol)
+                .font(.sourGummy(.regular, size: 20))
+                .bold()
+                .foregroundStyle(.white)
         })
-        .buttonStyle(.plain)
+        .padding()
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 25))
     }
 
     var timeSelectorView: some View {

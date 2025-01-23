@@ -36,11 +36,11 @@ extension HomeScreen {
         var currentSymbol: String {
             switch currentState {
             case .idle:
-                "play.fill"
+                "Start"
             case .running:
-                "stop.fill"
+                "Stop"
             case .stopped, .finished:
-                "arrow.trianglehead.counterclockwise"
+                "Reset"
             }
         }
 
