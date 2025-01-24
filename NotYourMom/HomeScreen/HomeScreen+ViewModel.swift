@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import Observation
 import UserNotifications
+import SwiftData
 
 extension HomeScreen {
 
@@ -20,6 +21,7 @@ extension HomeScreen {
         private let musicManager: MusicServiceProtocol
         private let notificationManager: NotificationManager
         private var countdownTimer: Timer?
+        let sessionHistoryViewModel: SessionHistoryViewModel
 
         // MARK: - Properties
 
@@ -83,8 +85,13 @@ extension HomeScreen {
             self.musicManager = musicManager
             self.motionManager = motionManager
             self.notificationManager = notificationManager
+            self.sessionHistoryViewModel = SessionHistoryViewModel()
             setInitialValues()
             setObservers()
+        }
+
+        func setModelContext(_ context: ModelContext) {
+            sessionHistoryViewModel.setModelContext(context)
         }
 
         // MARK: - Monitoring Control
@@ -176,6 +183,16 @@ extension HomeScreen {
             currentState = wasFinished ? .finished : .stopped
 
             if !isBreakTime {
+                // Save session only for work sessions, not breaks
+                if let startDate = startDate {
+                    let session = PomodoroSession(
+                        startDate: startDate,
+                        duration: selectedDuration,
+                        wasCompleted: wasFinished
+                    )
+                    await sessionHistoryViewModel.addSession(session)
+                }
+                
                 // Stop motion detection
                 motionManager.stopMonitoring()
                 isMute = true

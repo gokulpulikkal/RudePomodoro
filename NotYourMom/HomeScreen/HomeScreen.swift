@@ -7,54 +7,81 @@
 
 import ActivityKit
 import RiveRuntime
+import SwiftData
 import SwiftUI
 
 @MainActor
 struct HomeScreen: View {
-    @State var viewModel = ViewModel()
+    @Environment(\.modelContext) private var modelContext
+    @State private var showingHistory = false
+    @State private var viewModel = ViewModel()
 
     let rivAnimModel = RiveViewModel(fileName: "pomoNoBG", stateMachineName: "State Machine")
 
     var body: some View {
         ZStack {
-            VStack {
-                infoText
-                rivAnimation
-                    .frame(width: 300, height: 300)
-                ZStack {
-                    VStack {
-                        timerText
-                            .onTapGesture {
-                                withAnimation(.easeInOut) {
-                                    if viewModel.currentState == .idle {
-                                        viewModel.isTimerEditing = true
+            ZStack {
+                VStack {
+                    infoText
+                    rivAnimation
+                        .frame(width: 300, height: 300)
+                    ZStack {
+                        VStack {
+                            timerText
+                                .onTapGesture {
+                                    withAnimation(.easeInOut) {
+                                        if viewModel.currentState == .idle {
+                                            viewModel.isTimerEditing = true
+                                        }
                                     }
                                 }
+                            actionButton
+                            if viewModel.isBreakTime, viewModel.currentState == .idle {
+                                skipBreakButton
                             }
-                        actionButton
-                        if viewModel.isBreakTime && viewModel.currentState == .idle {
-                            skipBreakButton
                         }
+                        .opacity(viewModel.isTimerEditing ? 0 : 1)
+                        .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
+                        timeSelectorView
+                            .opacity(viewModel.isTimerEditing ? 1 : 0)
+                            .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
                     }
-                    .opacity(viewModel.isTimerEditing ? 0 : 1)
-                    .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
-                    timeSelectorView
-                        .opacity(viewModel.isTimerEditing ? 1 : 0)
-                        .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
                 }
+                musicToggle
+                    .disabled(viewModel.currentState != .running)
             }
-            musicToggle
-                .disabled(viewModel.currentState != .running)
+            .padding()
+            .background(
+                RadialGradientView()
+                    .ignoresSafeArea()
+            )
+            // Session history view
+            SessionHistoryView(viewModel: viewModel.sessionHistoryViewModel)
+                .opacity(!showingHistory ? 0 : 1)
+                .offset(x: showingHistory ? 0 : UIScreen.main.bounds.width)
         }
-        .padding()
-        .background(
-            RadialGradientView()
-                .ignoresSafeArea()
-        )
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
         .onChange(of: viewModel.currentState) {
             handleAnimationStates()
+        }
+        .gesture(
+            DragGesture()
+                .onEnded { gesture in
+                    let threshold: CGFloat = 50
+                    if gesture.translation.width < -threshold {
+                        withAnimation {
+                            showingHistory = true
+                        }
+                    } else if gesture.translation.width > threshold {
+                        withAnimation {
+                            showingHistory = false
+                        }
+                    }
+                }
+        )
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
 }
@@ -212,5 +239,6 @@ struct HomeScreen_Preview: PreviewProvider {
     static var previews: some View {
         HomeScreen()
             .previewDevice("iPhone 12")
+            .modelContainer(for: PomodoroSession.self)
     }
 }

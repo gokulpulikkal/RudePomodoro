@@ -9,19 +9,27 @@
 import SwiftUI
 import UserNotifications
 import CoreLocation
+import SwiftData
 
 @main
 struct NotYourMomApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    let container: ModelContainer
     
     init() {
+        do {
+            container = try ModelContainer(for: PomodoroSession.self)
+        } catch {
+            fatalError("Failed to initialize ModelContainer: \(error)")
+        }
         requestNotificationPermission()
     }
 
     var body: some Scene {
         WindowGroup {
-            LaunchScreen()
+            HomeScreen()
         }
+        .modelContainer(container)
     }
 
     private func requestNotificationPermission() {
