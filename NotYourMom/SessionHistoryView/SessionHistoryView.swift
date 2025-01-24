@@ -13,11 +13,11 @@ struct SessionHistoryView: View {
     @Query(sort: \PomodoroSession.startDate, order: .reverse) var sessionsList: [PomodoroSession]
 
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
             Text("Session History")
                 .font(.sourGummy(.bold, size: 24))
                 .foregroundStyle(.white)
-                .padding()
+                .padding(.top)
 
             if sessionsList.isEmpty {
                 ContentUnavailableView(
@@ -27,6 +27,8 @@ struct SessionHistoryView: View {
                 )
                 .foregroundStyle(.white)
             } else {
+                WeeklyStatsView(sessions: sessionsList)
+                    .padding(.horizontal)
                 List {
                     ForEach(sessionsList) { session in
                         SessionRowView(session: session)
@@ -42,4 +44,18 @@ struct SessionHistoryView: View {
                 .ignoresSafeArea()
         )
     }
+}
+
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: PomodoroSession.self, configurations: config)
+
+    // Add sample data to container
+    let context = container.mainContext
+    PreviewData.generateSessions().forEach { session in
+        context.insert(session)
+    }
+
+    return SessionHistoryView()
+        .modelContainer(container)
 }
