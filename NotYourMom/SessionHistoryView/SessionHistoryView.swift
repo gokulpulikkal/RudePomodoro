@@ -13,11 +13,11 @@ struct SessionHistoryView: View {
     @Query(sort: \PomodoroSession.startDate, order: .reverse) var sessionsList: [PomodoroSession]
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 0) {
             Text("Session History")
                 .font(.sourGummy(.bold, size: 24))
                 .foregroundStyle(.white)
-                .padding(.top)
+                .padding(.vertical)
 
             if sessionsList.isEmpty {
                 ContentUnavailableView(

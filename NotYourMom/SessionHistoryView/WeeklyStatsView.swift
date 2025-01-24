@@ -136,8 +136,10 @@ struct WeeklyStatsView: View {
             .frame(height: 200)
         }
         .padding()
-        .background(Color(hex: "5E2929").shadow(color: .gray.opacity(0.3), radius: 10, x: 0, y: 5))
+        .background(Color(hex: "5E2929"))
         .clipShape(RoundedRectangle(cornerRadius: 15))
+        .shadow(color: .black.opacity(0.6), radius: 10, x: 0, y: 5)
+        
     }
 
     private func maxYValue() -> Double {
@@ -162,7 +164,8 @@ struct WeeklyStatsView: View {
 #Preview {
     WeeklyStatsView(sessions: PreviewData.generateSessions())
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black)
+        .background(Color.white)
+        .padding()
 }
 
 /// Helper struct for preview data
