@@ -32,6 +32,9 @@ struct HomeScreen: View {
                                 }
                             }
                         actionButton
+                        if viewModel.isBreakTime && viewModel.currentState == .idle {
+                            skipBreakButton
+                        }
                     }
                     .opacity(viewModel.isTimerEditing ? 0 : 1)
                     .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
@@ -103,9 +106,27 @@ extension HomeScreen {
         .clipShape(RoundedRectangle(cornerRadius: 25))
     }
 
+    var skipBreakButton: some View {
+        Button(action: {
+            viewModel.skipBreak()
+            Task { @MainActor in
+                rivAnimModel.triggerInput("reset")
+            }
+        }, label: {
+            Text("Skip Break")
+                .font(.sourGummy(.regular, size: 16))
+                .bold()
+                .foregroundStyle(.white)
+        })
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 15))
+    }
+
     var timeSelectorView: some View {
         VStack(spacing: 30) {
-            TimePickerView(position: $viewModel.timerTime)
+            TimePickerView(position: viewModel.isBreakTime ? $viewModel.breakTime : $viewModel.timerTime)
                 .frame(height: 150)
             Button(action: {
                 viewModel.isTimerEditing = false
@@ -147,17 +168,27 @@ extension HomeScreen {
             switch viewModel.currentState {
             case .idle:
                 if await viewModel.startMonitoring() {
-                    rivAnimModel.triggerInput("start")
+                    if !viewModel.isBreakTime {
+                        rivAnimModel.triggerInput("start")
+                    } else {
+                        rivAnimModel.triggerInput("reset")
+                    }
                 }
             case .running:
                 await viewModel.stopMonitoring()
-                rivAnimModel.triggerInput("stop")
+                if !viewModel.isBreakTime {
+                    rivAnimModel.triggerInput("stop")
+                }
             case .stopped:
                 viewModel.setInitialValues()
-                rivAnimModel.triggerInput("reset")
+                if !viewModel.isBreakTime {
+                    rivAnimModel.triggerInput("reset")
+                }
             case .finished:
                 viewModel.setInitialValues()
-                rivAnimModel.triggerInput("reset")
+                if !viewModel.isBreakTime {
+                    rivAnimModel.triggerInput("reset")
+                }
             }
         }
     }
@@ -166,8 +197,10 @@ extension HomeScreen {
         Task { @MainActor in
             switch viewModel.currentState {
             case .finished:
-                print("Calling the finish!!")
-                rivAnimModel.triggerInput("finish")
+                if !viewModel.isBreakTime {
+                    print("Calling the finish!!")
+                    rivAnimModel.triggerInput("finish")
+                }
             default:
                 print("No need of handling! for the state \(viewModel.currentState)")
             }

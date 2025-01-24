@@ -32,31 +32,48 @@ extension HomeScreen {
         var remainingTime: TimeInterval = 10 * 60
         var startDate: Date?
         var lastUpdate: Date?
+        var isBreakTime = false
+        var breakTime: Int? = 1 // Default 5 minutes for break
 
         var currentSymbol: String {
             switch currentState {
             case .idle:
-                "Start"
+                if isBreakTime {
+                    "Start Break"
+                } else {
+                    "Start"
+                }
             case .running:
                 "Stop"
             case .stopped, .finished:
                 "Reset"
             }
         }
-        
+
         var pomoMessage: String {
             switch currentState {
             case .idle:
-                "Pomo’s chilling right now, but you should get to work before it judges you."
+                if isBreakTime {
+                    "Time for a break! Set your break duration or skip it."
+                } else {
+                    "Pomo's chilling right now, but you should get to work before it judges you."
+                }
             case .running:
-                "Shhh... Pomo’s in a deep nap. Don’t make it mad! Put your phone down and do some work"
+                if isBreakTime {
+                    "Enjoy your break! Pomo's making sure you relax properly."
+                } else {
+                    "Shhh... Pomo's in a deep nap. Don't make it mad! Put your phone down and do some work"
+                }
             case .stopped:
-                "Rude! You woke Pomo up! It’s giving you side-eye right now."
+                "Rude! You woke Pomo up! It's giving you side-eye right now."
             case .finished:
-                "Boom! Pomo’s feeling fresh and fabulous after that nap. Well done!"
+                if isBreakTime {
+                    "Break time's over! Ready for another focused session?"
+                } else {
+                    "Boom! Pomo's feeling fresh and fabulous after that nap. Time for a break!"
+                }
             }
         }
-
 
         init(
             musicManager: MusicServiceProtocol = MusicManager(),
@@ -95,7 +112,11 @@ extension HomeScreen {
         func setInitialValues() {
             Task { @MainActor in
                 currentState = .idle
-                selectedDuration = Double(timerTime ?? 10) * 60
+                if isBreakTime {
+                    selectedDuration = Double(breakTime ?? 5) * 60
+                } else {
+                    selectedDuration = Double(timerTime ?? 10) * 60
+                }
                 remainingTime = selectedDuration
                 startDate = nil
                 lastUpdate = nil
@@ -121,12 +142,12 @@ extension HomeScreen {
             lastUpdate = Date()
             isMute = true
 
-            await musicManager.startPlayback()
+            if !isBreakTime {
+                await musicManager.startPlayback()
+                // Then start motion detection
+                motionManager.startMonitoring()
+            }
             startLiveActivity()
-
-            // Then start motion detection
-            motionManager.startMonitoring()
-
             // Start countdown timer
             countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                 guard let self else {
@@ -151,43 +172,73 @@ extension HomeScreen {
 
         func stopMonitoring() async {
             print("🛑 Stopping monitoring session")
-            currentState = remainingTime == 0 ? .finished : .stopped
+            let wasFinished = remainingTime == 0
+            currentState = wasFinished ? .finished : .stopped
 
-            // Stop motion detection
-            motionManager.stopMonitoring()
-
-            // Stop background task
-            isMute = true
-            await musicManager.stopPlayback()
-            stopLiveActivity()
+            if !isBreakTime {
+                // Stop motion detection
+                motionManager.stopMonitoring()
+                isMute = true
+                await musicManager.stopPlayback()
+            }
 
             // Clean up timer
             countdownTimer?.invalidate()
             countdownTimer = nil
             startDate = nil
             lastUpdate = nil
-            print("✅ Monitoring session stopped")
+
+            // Send notification before changing state
             sendMonitoringStoppedNotification()
+            print("currentState: \(currentState), isBreakTime: \(isBreakTime)")
+            stopLiveActivity()
+
+            if wasFinished {
+                handleSessionComplete()
+            }
+
+            print("✅ Monitoring session stopped")
         }
 
         func sendPhoneMotionDetectedRudeNotification() {}
 
         func sendMonitoringStoppedNotification() {
-            Task {
-                let content = UNMutableNotificationContent()
-                content.title = "Monitoring Stopped"
-                content.body = "The background monitoring duration has ended."
-                content.sound = .default
+            let content = UNMutableNotificationContent()
 
-                let request = UNNotificationRequest(
-                    identifier: UUID().uuidString,
-                    content: content,
-                    trigger: nil
-                )
+            switch (currentState, isBreakTime) {
+            case (.finished, true):
+                // Break completed successfully
+                content.title = "Break Time Complete!"
+                content.body = "Time to get back to work! Start your next focused session."
+            case (.finished, false):
+                // Work session completed successfully
+                content.title = "Pomodoro Session Complete!"
+                content.body = "Great job! You've earned a break. Take some time to recharge."
+            case (.stopped, true):
+                // Break interrupted
+                content.title = "Break Interrupted"
+                content.body = "Your break session was stopped before completion."
+            case (.stopped, false):
+                // Work session interrupted
+                content.title = "Work Session Interrupted"
+                content.body = "Your Pomodoro session was stopped before completion."
+            default:
+                return // Don't send notification for other states
+            }
+
+            content.sound = .default
+
+            let request = UNNotificationRequest(
+                identifier: UUID().uuidString,
+                content: content,
+                trigger: nil
+            )
+
+            Task { [request] in
                 do {
                     try await UNUserNotificationCenter.current().add(request)
                 } catch {
-                    print("did not send  monitoring stopped notification! \(error.localizedDescription)")
+                    print("Failed to send notification: \(error.localizedDescription)")
                 }
             }
         }
@@ -196,10 +247,14 @@ extension HomeScreen {
 
         func startLiveActivity() {
             let adventure = RudePomoWidgetAttributes(name: "hero")
+            let message: LiveActivityMessage = isBreakTime
+                ? .init(title: "Break Time", body: "Taking a well-deserved break")
+                : .init(title: "Pomo is sleeping", body: "Focus time!")
+
             let initialState = RudePomoWidgetAttributes.ContentState(
                 startDate: startDate,
                 timerDuration: selectedDuration,
-                liveActivityMessage: .init(title: "Pomo is sleeping", body: "")
+                liveActivityMessage: message
             )
             let content = ActivityContent(state: initialState, staleDate: nil, relevanceScore: 0.0)
             do {
@@ -214,12 +269,19 @@ extension HomeScreen {
         }
 
         func stopLiveActivity() {
-            let liveActivityMessage: LiveActivityMessage = currentState == .stopped
-                ? .init(
-                    title: "Pomo is Angry",
-                    body: "You interrupted his sleep"
-                )
-                : .init(title: "Pomo is Happy", body: "You did a great job!")
+            let liveActivityMessage: LiveActivityMessage = switch (currentState, isBreakTime) {
+            case (.stopped, true):
+                .init(title: "Break Interrupted", body: "Break ended early")
+            case (.stopped, false):
+                .init(title: "Pomo is Angry", body: "You interrupted the session")
+            case (.finished, true):
+                .init(title: "Break Complete!", body: "Ready to focus?")
+            case (.finished, false):
+                .init(title: "Session Complete!", body: "Time for a break!")
+            default:
+                .init(title: "Session Ended", body: "")
+            }
+
             Task {
                 let finalContent = RudePomoWidgetAttributes.ContentState(
                     timerDuration: selectedDuration,
@@ -231,6 +293,25 @@ extension HomeScreen {
                     ActivityContent(state: finalContent, staleDate: nil),
                     dismissalPolicy: dismissalPolicy
                 )
+            }
+        }
+
+        /// Add method to handle session completion
+        func handleSessionComplete() {
+            if !isBreakTime {
+                isBreakTime = true
+                setInitialValues()
+            } else {
+                isBreakTime = false
+                setInitialValues()
+            }
+        }
+
+        /// Add method to skip break
+        func skipBreak() {
+            if isBreakTime {
+                isBreakTime = false
+                setInitialValues()
             }
         }
     }
