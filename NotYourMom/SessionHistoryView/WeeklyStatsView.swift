@@ -130,16 +130,6 @@ struct WeeklyStatsView: View {
                 AxisMarks { value in
                     AxisGridLine()
                         .foregroundStyle(.gray.opacity(0.3))
-
-                    if let minutes = value.as(Double.self) {
-                        if minutes == 0 || minutes == maxYValue() {
-                            AxisValueLabel {
-                                Text(formatDuration(minutes: minutes))
-                                    .font(.sourGummy(.regular, size: 10))
-                                    .foregroundStyle(.gray)
-                            }
-                        }
-                    }
                 }
             }
             .chartYScale(domain: 0...maxYValue())
@@ -147,26 +137,11 @@ struct WeeklyStatsView: View {
         }
         .padding()
         .background(Color(hex: "5E2929").shadow(color: .gray.opacity(0.3), radius: 10, x: 0, y: 5))
-        
         .clipShape(RoundedRectangle(cornerRadius: 15))
     }
 
     private func maxYValue() -> Double {
-        let maxMinutes = currentWeekStats.map(\.totalMinutes).max() ?? 0
-
-        if maxMinutes > 60 {
-            // For more than an hour, round up to nearest hour
-            return ceil(maxMinutes / 60) * 60
-        } else if maxMinutes > 15 {
-            // For 15-60 minutes, round up to nearest 15 minutes
-            return ceil(maxMinutes / 15) * 15
-        } else if maxMinutes > 5 {
-            // For 5-15 minutes, round up to nearest 5 minutes
-            return ceil(maxMinutes / 5) * 5
-        } else {
-            // For less than 5 minutes, round up to nearest minute
-            return ceil(maxMinutes)
-        }
+        return currentWeekStats.map(\.totalMinutes).max() ?? 0
     }
 
     private func formatDuration(minutes: Double) -> String {
