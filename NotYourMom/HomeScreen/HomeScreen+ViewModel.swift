@@ -9,8 +9,8 @@ import ActivityKit
 import Combine
 import Foundation
 import Observation
-import UserNotifications
 import SwiftData
+import UserNotifications
 
 extension HomeScreen {
 
@@ -21,7 +21,7 @@ extension HomeScreen {
         private let musicManager: MusicServiceProtocol
         private let notificationManager: NotificationManager
         private var countdownTimer: Timer?
-        let sessionHistoryViewModel: SessionHistoryViewModel
+        let sessionHistoryManager: SessionHistoryManager
 
         // MARK: - Properties
 
@@ -80,18 +80,19 @@ extension HomeScreen {
         init(
             musicManager: MusicServiceProtocol = MusicManager(),
             motionManager: PhoneMotionManager = PhoneMotionManager(),
-            notificationManager: NotificationManager = NotificationManager()
+            notificationManager: NotificationManager = NotificationManager(),
+            sessionHistoryManager: SessionHistoryManager = SessionHistoryManager()
         ) {
             self.musicManager = musicManager
             self.motionManager = motionManager
             self.notificationManager = notificationManager
-            self.sessionHistoryViewModel = SessionHistoryViewModel()
+            self.sessionHistoryManager = sessionHistoryManager
             setInitialValues()
             setObservers()
         }
 
         func setModelContext(_ context: ModelContext) {
-            sessionHistoryViewModel.setModelContext(context)
+            sessionHistoryManager.setModelContext(context)
         }
 
         // MARK: - Monitoring Control
@@ -184,15 +185,15 @@ extension HomeScreen {
 
             if !isBreakTime {
                 // Save session only for work sessions, not breaks
-                if let startDate = startDate {
+                if let startDate {
                     let session = PomodoroSession(
                         startDate: startDate,
                         duration: selectedDuration,
                         wasCompleted: wasFinished
                     )
-                    await sessionHistoryViewModel.addSession(session)
+                    await sessionHistoryManager.addSession(session)
                 }
-                
+
                 // Stop motion detection
                 motionManager.stopMonitoring()
                 isMute = true

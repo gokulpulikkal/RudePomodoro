@@ -56,7 +56,7 @@ struct HomeScreen: View {
                     .ignoresSafeArea()
             )
             // Session history view
-            SessionHistoryView(viewModel: viewModel.sessionHistoryViewModel)
+            SessionHistoryView()
                 .opacity(!showingHistory ? 0 : 1)
                 .offset(x: showingHistory ? 0 : UIScreen.main.bounds.width)
         }
@@ -69,7 +69,7 @@ struct HomeScreen: View {
             DragGesture()
                 .onEnded { gesture in
                     let threshold: CGFloat = 50
-                    if gesture.translation.width < -threshold {
+                    if viewModel.currentState != .running, gesture.translation.width < -threshold {
                         withAnimation {
                             showingHistory = true
                         }
@@ -178,7 +178,7 @@ extension HomeScreen {
                 Button(action: {
                     viewModel.toggleAudioMute()
                 }, label: {
-                    Image(systemName: viewModel.isMute ? "speaker.slash" : "speaker")
+                    Image(systemName: viewModel.isMute == true ? "speaker.slash" : "speaker")
                         .font(.system(size: 30))
                         .frame(width: 30, height: 30, alignment: .center)
                         .contentTransition(.symbolEffect(.replace))

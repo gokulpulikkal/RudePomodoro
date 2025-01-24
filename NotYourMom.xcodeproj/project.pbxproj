@@ -78,9 +78,9 @@
 		4B22A1CE2D4033B600B1A490 /* Exceptions for "NotYourMom" folder in "RudePomoWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				CustomStyles/GaugeProgressStyle.swift,
-				"Extensions/Double+Extensions.swift",
-				"Extensions/Font+Extentions.swift",
+				Custom/CustomStyles/GaugeProgressStyle.swift,
+				"Custom/Extensions/Double+Extensions.swift",
+				"Custom/Extensions/Font+Extentions.swift",
 				"Fonts/SourGummy_SemiExpanded-Bold.ttf",
 				"Fonts/SourGummy_SemiExpanded-Medium.ttf",
 				"Fonts/SourGummy_SemiExpanded-Regular.ttf",
