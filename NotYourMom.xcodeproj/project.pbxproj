@@ -84,9 +84,9 @@
 				"Fonts/SourGummy_SemiExpanded-Bold.ttf",
 				"Fonts/SourGummy_SemiExpanded-Medium.ttf",
 				"Fonts/SourGummy_SemiExpanded-Regular.ttf",
-				LaunchScreen/RadialGradientView.swift,
 				Models/LiveActivityMessage.swift,
 				pomoNoBG.riv,
+				Screens/LaunchScreen/RadialGradientView.swift,
 			);
 			target = 4B22A1662D3F3BAE00B1A490 /* RudePomoWidgetExtension */;
 		};

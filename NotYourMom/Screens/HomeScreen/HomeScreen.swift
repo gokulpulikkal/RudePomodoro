@@ -121,7 +121,9 @@ extension HomeScreen {
 
     var actionButton: some View {
         Button(action: {
-            handleActionButtons()
+            Task {
+                await handleActionButtons()
+            }
         }, label: {
             Text(viewModel.currentSymbol)
                 .font(.sourGummy(.regular, size: 20))
@@ -190,46 +192,57 @@ extension HomeScreen {
         }
     }
 
-    func handleActionButtons() {
-        Task { @MainActor in
-            switch viewModel.currentState {
-            case .idle:
-                if await viewModel.startMonitoring() {
-                    if !viewModel.isBreakTime {
-                        rivAnimModel.triggerInput("start")
-                    } else {
-                        rivAnimModel.triggerInput("reset")
-                    }
-                }
-            case .running:
-                await viewModel.stopMonitoring()
+    func handleActionButtons() async {
+        switch viewModel.currentState {
+        case .idle:
+            if await viewModel.startMonitoring() {
                 if !viewModel.isBreakTime {
-                    rivAnimModel.triggerInput("stop")
+                    triggerAnimation(trigger: .start)
+                } else {
+                    triggerAnimation(trigger: .reset)
                 }
-            case .stopped:
-                viewModel.setInitialValues()
-                if !viewModel.isBreakTime {
-                    rivAnimModel.triggerInput("reset")
-                }
-            case .finished:
-                viewModel.setInitialValues()
-                if !viewModel.isBreakTime {
-                    rivAnimModel.triggerInput("reset")
-                }
+            }
+        case .running:
+            await viewModel.stopMonitoring()
+            if !viewModel.isBreakTime {
+                triggerAnimation(trigger: .stop)
+            }
+        case .stopped:
+            viewModel.setInitialValues()
+            if !viewModel.isBreakTime {
+                triggerAnimation(trigger: .reset)
+            }
+        case .finished:
+            viewModel.setInitialValues()
+            if !viewModel.isBreakTime {
+                triggerAnimation(trigger: .reset)
             }
         }
     }
 
     func handleAnimationStates() {
+        switch viewModel.currentState {
+        case .finished:
+            if !viewModel.isBreakTime {
+                print("Calling the finish!!")
+                triggerAnimation(trigger: .finish)
+            }
+        default:
+            print("No need of handling! for the state \(viewModel.currentState)")
+        }
+    }
+
+    func triggerAnimation(trigger: AnimationTriggers) {
         Task { @MainActor in
-            switch viewModel.currentState {
-            case .finished:
-                if !viewModel.isBreakTime {
-                    print("Calling the finish!!")
-                    rivAnimModel.triggerInput("finish")
-                }
-            default:
-                print("No need of handling! for the state \(viewModel.currentState)")
+            switch trigger {
+            case .start:
+                rivAnimModel.triggerInput("start")
+            case .stop:
+                rivAnimModel.triggerInput("stop")
+            case .finish:
+                rivAnimModel.triggerInput("finish")
+            case .reset:
+                rivAnimModel.triggerInput("reset")
             }
         }
     }
