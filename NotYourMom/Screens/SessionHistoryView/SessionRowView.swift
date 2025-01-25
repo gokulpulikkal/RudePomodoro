@@ -24,7 +24,7 @@ struct SessionRowView: View {
             Spacer()
 
             Image(systemName: session.wasCompleted ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .foregroundStyle(session.wasCompleted ? .green : .red)
+                .foregroundStyle(session.wasCompleted ? Color(hex: "#3B6B2B") : Color(hex: "#CB5042"))
         }
         .padding(.vertical, 8)
         .listRowBackground(Color.clear)

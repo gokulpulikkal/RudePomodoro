@@ -94,7 +94,7 @@ struct WeeklyStatsView: View {
                         x: .value("Day", stat.weekday, unit: .weekday),
                         y: .value("Duration", stat.totalMinutes)
                     )
-                    .foregroundStyle(Color.cyan)
+                    .foregroundStyle(Color(hex: "#CB5042"))
                     .annotation(position: .top) {
                         if stat.totalMinutes > 0 {
                             Text(formatDuration(minutes: stat.totalMinutes))
@@ -108,7 +108,7 @@ struct WeeklyStatsView: View {
                     y: .value("Average", weeklyAverage)
                 )
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
-                .foregroundStyle(.green)
+                .foregroundStyle(Color(hex: "#3B6B2B"))
                 .annotation(position: .top, alignment: .trailing) {
                     Text("avg")
                         .font(.sourGummy(.regular, size: 12))
