@@ -12,6 +12,9 @@ import SwiftUI
 struct SessionHistoryView: View {
     @Query(sort: \PomodoroSession.startDate, order: .reverse) var sessionsList: [PomodoroSession]
     @Binding var isShowing: Bool
+    private let columns = [
+        GridItem(.adaptive(minimum: 360, maximum: 360), spacing: 50)
+    ]
 
     var body: some View {
         VStack(spacing: 0) {
@@ -44,14 +47,18 @@ struct SessionHistoryView: View {
                 .foregroundStyle(.white)
             } else {
                 WeeklyStatsView(sessions: sessionsList)
-                    .padding(.horizontal)
-                List {
-                    ForEach(sessionsList) { session in
-                        SessionRowView(session: session)
+                    .padding([.horizontal, .bottom])
+                    .frame(maxWidth: 900)
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 18) {
+                        Section {
+                            // Here goes the items
+                            ForEach(sessionsList) { session in
+                                SessionRowView(session: session)
+                            }
+                        }
                     }
                 }
-                .scrollContentBackground(.hidden)
-                .listStyle(.plain)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
