@@ -12,7 +12,11 @@ But if you power through and complete your session distraction-free? You’ll ge
 
 ## 📸 Demo  
 
-https://github.com/user-attachments/assets/9593f090-9bb5-4c86-a19a-0f650007e8f4
+
+
+https://github.com/user-attachments/assets/22f1dd35-9f10-451f-b0a2-5be5bc3e193b
+
+
 
 https://github.com/user-attachments/assets/1e703131-bf79-469d-bdab-09ffeaf29f3b
 
