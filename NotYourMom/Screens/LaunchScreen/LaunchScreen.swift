@@ -18,17 +18,15 @@ struct LaunchScreen: View {
                         .foregroundStyle(.white)
                         .font(.sourGummy(.bold, size: 50))
                 }
-                    .transition(.opacity)
-                    .task {
-                        do {
-                            try await Task.sleep(for: .seconds(1))
-                            
-                            isLoading = false
-                        } catch {
-                            print("Error in starting the app")
-                        }
-
+                .transition(.opacity)
+                .task {
+                    do {
+                        try await Task.sleep(for: .seconds(1))
+                        isLoading = false
+                    } catch {
+                        print("Error in starting the app")
                     }
+                }
             } else {
                 HomeScreen()
                     .transition(.opacity)

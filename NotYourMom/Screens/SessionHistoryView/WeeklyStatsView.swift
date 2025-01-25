@@ -99,7 +99,7 @@ struct WeeklyStatsView: View {
                         if stat.totalMinutes > 0 {
                             Text(formatDuration(minutes: stat.totalMinutes))
                                 .font(.sourGummy(.regular, size: 10))
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(.white)
                         }
                     }
                 }
@@ -121,7 +121,7 @@ struct WeeklyStatsView: View {
                         AxisValueLabel {
                             Text(date.formatted(.dateTime.weekday(.narrow)))
                                 .font(.sourGummy(.regular, size: 12))
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(.white)
                         }
                     }
                 }

@@ -27,7 +27,7 @@ struct NotYourMomApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeScreen()
+            LaunchScreen()
         }
         .modelContainer(container)
     }
