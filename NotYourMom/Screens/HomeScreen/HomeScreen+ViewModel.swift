@@ -36,6 +36,7 @@ extension HomeScreen {
         var lastUpdate: Date?
         var isBreakTime = false
         var breakTime: Int? = 1 // Default 5 minutes for break
+        var isMotionDetectionOn = true
 
         var currentSymbol: String {
             switch currentState {
@@ -100,7 +101,7 @@ extension HomeScreen {
         /// Needs refactoring
         func setObservers() {
             motionManager.onDetectingMotion = { [weak self] currentState in
-                guard let self, let lastUpdate else {
+                guard let self, let lastUpdate, isMotionDetectionOn else {
                     return
                 }
                 if Date().timeIntervalSince(lastUpdate) > 3 { // 3  seconds gap

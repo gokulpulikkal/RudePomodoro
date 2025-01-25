@@ -177,14 +177,23 @@ extension HomeScreen {
             Spacer()
             HStack {
                 Spacer()
-                Button(action: {
-                    viewModel.toggleAudioMute()
-                }, label: {
-                    Image(systemName: viewModel.isMute == true ? "speaker.slash" : "speaker")
-                        .font(.system(size: 30))
-                        .frame(width: 30, height: 30, alignment: .center)
-                        .contentTransition(.symbolEffect(.replace))
-                })
+                HStack(spacing: 20) {
+                    Button(action: {
+                        viewModel.toggleAudioMute()
+                    }, label: {
+                        Image(systemName: viewModel.isMute == true ? "speaker.slash" : "speaker")
+                            .font(.system(size: 20))
+                            .frame(width: 20, height: 20, alignment: .center)
+                            .contentTransition(.symbolEffect(.replace))
+                    })
+                    Button(action: {
+                        viewModel.isMotionDetectionOn.toggle()
+                    }, label: {
+                        Image(systemName: "iphone.gen3.radiowaves.left.and.right", variableValue: viewModel.isMotionDetectionOn ? 2: 0)
+                            .font(.system(size: 20))
+                            .frame(width: 20, height: 20, alignment: .center)
+                    })
+                }
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
             }
@@ -251,7 +260,6 @@ extension HomeScreen {
 struct HomeScreen_Preview: PreviewProvider {
     static var previews: some View {
         HomeScreen()
-            .previewDevice("iPhone 12")
             .modelContainer(for: PomodoroSession.self)
     }
 }
