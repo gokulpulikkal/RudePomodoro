@@ -56,7 +56,7 @@ struct HomeScreen: View {
                     .ignoresSafeArea()
             )
             // Session history view
-            SessionHistoryView()
+            SessionHistoryView(isShowing: $showingHistory)
                 .opacity(!showingHistory ? 0 : 1)
                 .offset(x: showingHistory ? 0 : UIScreen.main.bounds.width)
         }

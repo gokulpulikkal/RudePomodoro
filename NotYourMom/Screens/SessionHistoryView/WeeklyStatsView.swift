@@ -138,7 +138,7 @@ struct WeeklyStatsView: View {
         .padding()
         .background(Color(hex: "5E2929"))
         .clipShape(RoundedRectangle(cornerRadius: 15))
-        .shadow(color: .black.opacity(0.6), radius: 10, x: 0, y: 5)
+        .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 5)
         
     }
 

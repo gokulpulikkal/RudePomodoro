@@ -11,13 +11,29 @@ import SwiftUI
 
 struct SessionHistoryView: View {
     @Query(sort: \PomodoroSession.startDate, order: .reverse) var sessionsList: [PomodoroSession]
+    @Binding var isShowing: Bool
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("Session History")
-                .font(.sourGummy(.bold, size: 24))
-                .foregroundStyle(.white)
-                .padding(.vertical)
+            ZStack {
+                Text("Session History")
+                    .font(.sourGummy(.bold, size: 24))
+                    .foregroundStyle(.white)
+                    .padding(.vertical)
+                HStack {
+                    Button(action: {
+                        withAnimation {
+                            isShowing = false
+                        }
+                    }, label: {
+                        Image(systemName: "arrow.backward")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.white)
+                    })
+                    Spacer()
+                }
+                .padding()
+            }
 
             if sessionsList.isEmpty {
                 ContentUnavailableView(
@@ -56,6 +72,6 @@ struct SessionHistoryView: View {
         context.insert(session)
     }
 
-    return SessionHistoryView()
+    return SessionHistoryView(isShowing: .constant(true))
         .modelContainer(container)
 }
