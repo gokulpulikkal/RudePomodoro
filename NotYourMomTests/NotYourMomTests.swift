@@ -10,8 +10,14 @@ import Testing
 
 struct NotYourMomTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    @Test func PomoInit() async throws {
+        let chillingPomo = Pomo<Chilling>()
+        chillingPomo.printMe()
+        let sleepingPomo = chillingPomo.switchToSleeping()
+        sleepingPomo.printMe()
+        
+        let amazedPomo = sleepingPomo.switchToAmazed()
+        
     }
 
 }
