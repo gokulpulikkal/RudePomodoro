@@ -17,16 +17,20 @@ struct SessionHistoryView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 0) {
-            navBar
-            if sessionsList.isEmpty {
-                noHistoryView
-            } else {
-                WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
-                    .padding([.horizontal, .bottom])
-                    .frame(maxWidth: 900)
-                sessionHistoryList
+        ZStack {
+            VStack(spacing: 0) {
+                navBar
+                if sessionsList.isEmpty {
+                    noHistoryView
+                } else {
+                    WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
+                        .padding([.horizontal, .bottom])
+                        .frame(maxWidth: 900)
+                    sessionHistoryList
+                }
             }
+            bottomSnackBarForPremium
+                .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
@@ -49,7 +53,7 @@ extension SessionHistoryView {
                         isShowing = false
                     }
                 }, label: {
-                    Image(systemName: "arrow.backward")
+                    Image(systemName: "multiply.circle.fill")
                         .font(.system(size: 20))
                         .foregroundStyle(.white)
                 })
@@ -78,6 +82,27 @@ extension SessionHistoryView {
                     }
                 }
             }
+        }
+    }
+
+    var bottomSnackBarForPremium: some View {
+        VStack {
+            Spacer()
+            HStack(spacing: 20) {
+                Text("This is demo chart, subscribe to unlock this feature")
+                    .font(.sourGummy(.regular, size: 14))
+                Button(action: {}, label: {
+                    Text("Try Free")
+                        .font(.sourGummy(.regular, size: 16))
+                        .bold()
+                        .foregroundStyle(.white)
+                })
+                .padding()
+                .background(.thinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 25))
+            }
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 10).fill(Color(hex: "#CB5042")))
         }
     }
 }

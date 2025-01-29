@@ -47,10 +47,10 @@ struct HomeScreen: View {
                             .offset(x: viewModel.isTimerEditing ? 0 : UIScreen.main.bounds.width)
                     }
                 }
-                musicToggle
+                featureToggles
                     .disabled(viewModel.currentState != .running)
             }
-            .padding()
+            .padding(.vertical)
             .background(
                 RadialGradientView()
                     .ignoresSafeArea()
@@ -171,7 +171,7 @@ extension HomeScreen {
         }
     }
 
-    var musicToggle: some View {
+    var featureToggles: some View {
         VStack {
             Spacer()
             HStack {
@@ -199,7 +199,7 @@ extension HomeScreen {
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
             }
-            .padding()
+            .padding(30)
         }
     }
 
