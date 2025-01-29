@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RiveRuntime
 
 enum PomoState: ~Copyable {
     case chilling(Pomo<Chilling>)
@@ -13,8 +14,8 @@ enum PomoState: ~Copyable {
     case angry(Pomo<Angry>)
     case amazed(Pomo<Amazed>)
 
-    init() {
-        self = .chilling(Pomo<Chilling>())
+    init(animationModel: RiveViewModel) {
+        self = .chilling(Pomo<Chilling>(rivAnimModel: animationModel))
     }
 
     mutating func switchToSleeping() {
