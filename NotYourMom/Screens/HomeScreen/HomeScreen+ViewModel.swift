@@ -31,9 +31,9 @@ extension HomeScreen {
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
 
-        var timerTime: Int? = 1
-        var selectedDuration: TimeInterval = 10 * 60
-        var remainingTime: TimeInterval = 10 * 60
+        var timerTime: Int? = 25
+        var selectedDuration: TimeInterval = 25 * 60
+        var remainingTime: TimeInterval = 25 * 60
 
         var startDate: Date?
         var lastUpdate: Date?
