@@ -91,7 +91,6 @@ extension HomeScreen {
         VStack {
             TypewriterView(text: viewModel.pomoMessage, typingDelay: .milliseconds(15))
                 .multilineTextAlignment(.center)
-//                        .font(.system(size: 20, weight: .bold, design: .rounded))
                 .frame(maxWidth: 400)
                 .font(.sourGummy(.medium, size: 20))
                 .foregroundStyle(.white)
@@ -189,9 +188,12 @@ extension HomeScreen {
                     Button(action: {
                         viewModel.isMotionDetectionOn.toggle()
                     }, label: {
-                        Image(systemName: "iphone.gen3.radiowaves.left.and.right", variableValue: viewModel.isMotionDetectionOn ? 2: 0)
-                            .font(.system(size: 20))
-                            .frame(width: 20, height: 20, alignment: .center)
+                        Image(
+                            systemName: "iphone.gen3.radiowaves.left.and.right",
+                            variableValue: viewModel.isMotionDetectionOn ? 2 : 0
+                        )
+                        .font(.system(size: 20))
+                        .frame(width: 20, height: 20, alignment: .center)
                     })
                 }
                 .buttonStyle(.plain)
