@@ -1,69 +1,16 @@
+//
+//  WeeklyStatsView.swift
+//  NotYourMom
+//
+//  Created by Gokul P on 1/24/25.
+//
+
 import Charts
 import SwiftUI
 
 struct WeeklyStatsView: View {
-    let sessions: [PomodoroSession]
 
-    private struct DayStats {
-        let weekday: Date
-        let totalMinutes: Double
-    }
-
-    private var currentWeekStats: [DayStats] {
-        let calendar = Calendar.current
-        let today = Date()
-        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today))!
-
-        return (0..<7).map { dayOffset in
-            let date = calendar.date(byAdding: .day, value: dayOffset, to: startOfWeek)!
-            let dayStart = calendar.startOfDay(for: date)
-            let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart)!
-
-            let dayMinutes = sessions
-                .filter { $0.startDate >= dayStart && $0.startDate < dayEnd && $0.wasCompleted }
-                .reduce(0.0) { $0 + $1.duration / 60 }
-
-            return DayStats(weekday: date, totalMinutes: dayMinutes)
-        }
-    }
-
-    private var weeklyAverage: Double {
-        let totalMinutes = currentWeekStats.reduce(0.0) { $0 + $1.totalMinutes }
-        let daysWithSessions = currentWeekStats.filter { $0.totalMinutes > 0 }.count
-        return daysWithSessions > 0 ? totalMinutes / Double(daysWithSessions) : 0
-    }
-
-    private var lastWeekComparison: Double? {
-        let calendar = Calendar.current
-        let today = Date()
-        let startOfCurrentWeek = calendar.date(from: calendar.dateComponents(
-            [.yearForWeekOfYear, .weekOfYear],
-            from: today
-        ))!
-        let startOfLastWeek = calendar.date(byAdding: .weekOfYear, value: -1, to: startOfCurrentWeek)!
-
-        let lastWeekSessions = sessions.filter { session in
-            session.startDate >= startOfLastWeek &&
-                session.startDate < startOfCurrentWeek &&
-                session.wasCompleted
-        }
-
-        guard !lastWeekSessions.isEmpty else {
-            return nil
-        }
-
-        let lastWeekMinutes = lastWeekSessions.reduce(0.0) { $0 + $1.duration / 60 }
-        let lastWeekDays = Set(lastWeekSessions.map { calendar.startOfDay(for: $0.startDate) }).count
-        let lastWeekAverage = lastWeekMinutes / Double(lastWeekDays)
-
-        return ((weeklyAverage - lastWeekAverage) / lastWeekAverage) * 100
-    }
-
-    private var formattedAverage: String {
-        let hours = Int(weeklyAverage / 60)
-        let minutes = Int(weeklyAverage.truncatingRemainder(dividingBy: 60))
-        return "\(hours)h \(minutes)m"
-    }
+    let viewModel: ViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -73,11 +20,11 @@ struct WeeklyStatsView: View {
                     .foregroundStyle(.gray)
 
                 HStack(alignment: .firstTextBaseline, spacing: 16) {
-                    Text(formattedAverage)
+                    Text(viewModel.formattedAverage)
                         .font(.sourGummy(.bold, size: 24))
                         .foregroundStyle(.white)
 
-                    if let comparison = lastWeekComparison {
+                    if let comparison = viewModel.lastWeekComparison {
                         HStack(spacing: 4) {
                             Image(systemName: comparison >= 0 ? "arrow.up" : "arrow.down")
                             Text("\(abs(Int(comparison)))% from last week")
@@ -89,7 +36,7 @@ struct WeeklyStatsView: View {
             }
 
             Chart {
-                ForEach(currentWeekStats, id: \.weekday) { stat in
+                ForEach(viewModel.currentWeekStats, id: \.weekday) { stat in
                     BarMark(
                         x: .value("Day", stat.weekday, unit: .weekday),
                         y: .value("Duration", stat.totalMinutes)
@@ -97,7 +44,7 @@ struct WeeklyStatsView: View {
                     .foregroundStyle(Color(hex: "#CB5042"))
                     .annotation(position: .top) {
                         if stat.totalMinutes > 0 {
-                            Text(formatDuration(minutes: stat.totalMinutes))
+                            Text(viewModel.formatDuration(minutes: stat.totalMinutes))
                                 .font(.sourGummy(.regular, size: 10))
                                 .foregroundStyle(.white)
                         }
@@ -105,7 +52,7 @@ struct WeeklyStatsView: View {
                 }
 
                 RuleMark(
-                    y: .value("Average", weeklyAverage)
+                    y: .value("Average", viewModel.weeklyAverage)
                 )
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
                 .foregroundStyle(Color(hex: "#3B6B2B"))
@@ -127,42 +74,23 @@ struct WeeklyStatsView: View {
                 }
             }
             .chartYAxis {
-                AxisMarks { value in
+                AxisMarks { _ in
                     AxisGridLine()
                         .foregroundStyle(.gray.opacity(0.3))
                 }
             }
-            .chartYScale(domain: 0...maxYValue())
+            .chartYScale(domain: 0...viewModel.maxYValue())
             .frame(height: 200)
         }
         .padding()
         .background(Color(hex: "5E2929"))
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 5)
-        
-    }
-
-    private func maxYValue() -> Double {
-        return currentWeekStats.map(\.totalMinutes).max() ?? 0
-    }
-
-    private func formatDuration(minutes: Double) -> String {
-        if minutes < 60 {
-            return "\(Int(minutes))m"
-        } else {
-            let hours = Int(minutes / 60)
-            let remainingMinutes = Int(minutes.truncatingRemainder(dividingBy: 60))
-            if remainingMinutes == 0 {
-                return "\(hours)h"
-            } else {
-                return "\(hours)h \(remainingMinutes)m"
-            }
-        }
     }
 }
 
 #Preview {
-    WeeklyStatsView(sessions: PreviewData.generateSessions())
+    WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: PreviewData.generateSessions()))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .padding()
@@ -198,23 +126,5 @@ enum PreviewData {
                 )
             }
         }
-    }
-
-    static func generateHighUsageData() -> [PomodoroSession] {
-        // Many long sessions
-        // ... similar logic with higher durations and more sessions
-        []
-    }
-
-    static func generateLowUsageData() -> [PomodoroSession] {
-        // Few short sessions
-        // ... similar logic with lower durations and fewer sessions
-        []
-    }
-
-    static func generateIncompleteData() -> [PomodoroSession] {
-        // Mostly incomplete sessions
-        // ... similar logic with wasCompleted mostly false
-        []
     }
 }

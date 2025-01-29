@@ -18,47 +18,14 @@ struct SessionHistoryView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ZStack {
-                Text("Session History")
-                    .font(.sourGummy(.bold, size: 24))
-                    .foregroundStyle(.white)
-                    .padding(.vertical)
-                HStack {
-                    Button(action: {
-                        withAnimation {
-                            isShowing = false
-                        }
-                    }, label: {
-                        Image(systemName: "arrow.backward")
-                            .font(.system(size: 20))
-                            .foregroundStyle(.white)
-                    })
-                    Spacer()
-                }
-                .padding()
-            }
-
+            navBar
             if sessionsList.isEmpty {
-                ContentUnavailableView(
-                    "No Sessions Yet",
-                    systemImage: "clock.badge.xmark",
-                    description: Text("Complete your first session to see it here")
-                )
-                .foregroundStyle(.white)
+                noHistoryView
             } else {
-                WeeklyStatsView(sessions: sessionsList)
+                WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
                     .padding([.horizontal, .bottom])
                     .frame(maxWidth: 900)
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 18) {
-                        Section {
-                            // Here goes the items
-                            ForEach(sessionsList) { session in
-                                SessionRowView(session: session)
-                            }
-                        }
-                    }
-                }
+                sessionHistoryList
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -66,6 +33,52 @@ struct SessionHistoryView: View {
             RadialGradientView()
                 .ignoresSafeArea()
         )
+    }
+}
+
+extension SessionHistoryView {
+    var navBar: some View {
+        ZStack {
+            Text("Session History")
+                .font(.sourGummy(.bold, size: 24))
+                .foregroundStyle(.white)
+                .padding(.vertical)
+            HStack {
+                Button(action: {
+                    withAnimation {
+                        isShowing = false
+                    }
+                }, label: {
+                    Image(systemName: "arrow.backward")
+                        .font(.system(size: 20))
+                        .foregroundStyle(.white)
+                })
+                Spacer()
+            }
+            .padding()
+        }
+    }
+
+    var noHistoryView: some View {
+        ContentUnavailableView(
+            "No Sessions Yet",
+            systemImage: "clock.badge.xmark",
+            description: Text("Complete your first session to see it here")
+        )
+        .foregroundStyle(.white)
+    }
+
+    var sessionHistoryList: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 18) {
+                Section {
+                    // Here goes the items
+                    ForEach(sessionsList) { session in
+                        SessionRowView(session: session)
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -68,7 +68,7 @@ class CleanViewModel {
     }
 
     private func isTimerCompletedRunning() -> Bool {
-        guard let startDate = timerStartDate, let timerDuration else {
+        guard let _ = timerStartDate else {
             return false
         }
         return true

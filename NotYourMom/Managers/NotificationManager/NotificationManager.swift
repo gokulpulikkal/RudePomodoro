@@ -10,7 +10,7 @@ import UserNotifications
 
 class NotificationManager {
 
-    private let messages = [
+    private let rudeMessages = [
         "Shouldn't you be working right now?",
         "Put the phone down and do something useful!",
         "Your future self will regret this wasted time.",
@@ -62,6 +62,50 @@ class NotificationManager {
         "Your potential is crying in a corner right now.",
         "You’re capable of more. Show it!"
     ]
+    
+    private let successMessages = [
+        "Nice work! Your future self is thanking you right now.",
+        "You stayed focused, and it paid off! Keep it up!",
+        "That’s how you get things done! Keep crushing it!",
+        "Discipline wins again! Great job staying on track!",
+        "Small wins lead to big success—this was a solid one!",
+        "Your productivity just leveled up. Well done!",
+        "That was a strong session! Ready for the next challenge?",
+        "You're proving to yourself that you can do this!",
+        "Success is built one session at a time. Keep going!",
+        "You just showed procrastination who's boss!",
+        "Boom! Another session in the books. Keep the momentum!",
+        "You’re building habits that will take you far!",
+        "Stay consistent, and these small wins will turn into something huge!",
+        "One step closer to your goals—well done!",
+        "You stayed on task, and it shows. Keep pushing forward!",
+        "Look at you being all productive! Keep up the great work!",
+        "That’s how winners work! Stay on this path!",
+        "Great discipline! You’re creating real progress.",
+        "Your dedication is paying off—keep stacking these wins!",
+        "Success loves consistency, and you’re proving it!",
+        "That’s the way to stay committed! Let’s do it again!",
+        "You didn’t let distractions win—well done!",
+        "Keep showing up, and the results will follow!",
+        "A focused mind is a powerful mind. You're proving that!",
+        "You’re building something great—one session at a time!",
+        "That’s the kind of effort that leads to success!",
+        "Another Pomodoro down, another step forward!",
+        "You just showed up for yourself, and that matters!",
+        "Every session counts, and this one was a win!",
+        "Hard work pays off—you’re proving it!",
+        "Momentum is on your side now. Keep rolling!",
+        "The best investment is in yourself. You’re doing it right!",
+        "Your focus was on point! Keep that energy going!",
+        "Discipline over distractions—you're making it happen!",
+        "Great job! This is how progress is made!",
+        "Success is a series of small wins. You just got another!",
+        "You just got stronger, smarter, and more focused!",
+        "One Pomodoro at a time, you're mastering productivity!",
+        "You’re proving that you’re serious about your goals!",
+        "The path to success is built on moments like this!"
+    ]
+
 
     func requestPermission() async throws -> Bool {
         try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .criticalAlert])
@@ -70,10 +114,26 @@ class NotificationManager {
     func sendRudeNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Stay focused!"
-        content.body = messages.randomElement() ?? "Stay focused!"
+        content.body = rudeMessages.randomElement() ?? "Stay focused!"
         content.sound = .default
         content.interruptionLevel = .critical
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    func sendSuccessNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Pomodoro Session Complete!"
+        content.body = successMessages.randomElement() ?? ""
+        content.sound = .default
+        content.interruptionLevel = .critical
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,

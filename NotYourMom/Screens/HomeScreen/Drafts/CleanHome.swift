@@ -19,13 +19,11 @@ struct CleanHome: View {
                 rivAnimation
                     .frame(width: 300, height: 300)
                 Button(action: {
-                    Task {
-                        await cleanViewModel.changeState()
-                    }
+                    cleanViewModel.changeState()
                 }, label: {
                     Text("Change state")
                 })
-                
+
                 Text(cleanViewModel.buttonText)
             }
         }

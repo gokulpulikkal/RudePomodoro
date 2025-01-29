@@ -17,25 +17,29 @@ extension HomeScreen {
     @MainActor
     @Observable
     class ViewModel {
+        // MARK: - Properties
+
         private let motionManager: PhoneMotionManager
         private let musicManager: MusicServiceProtocol
         private let notificationManager: NotificationManager
+        private let sessionHistoryManager: SessionHistoryManager
+
         private var countdownTimer: Timer?
-        let sessionHistoryManager: SessionHistoryManager
-
-        // MARK: - Properties
-
-        var activity: Activity<RudePomoWidgetAttributes>?
+        var liveActivity: Activity<RudePomoWidgetAttributes>?
         var isMute = true
-        var timerTime: Int? = 10
+
         var isTimerEditing = false
         var currentState: AnimationActions = .idle
-        var selectedDuration: TimeInterval = 10 * 60 // Default 10 minutes
+
+        var timerTime: Int? = 1
+        var selectedDuration: TimeInterval = 10 * 60
         var remainingTime: TimeInterval = 10 * 60
+
         var startDate: Date?
         var lastUpdate: Date?
+
         var isBreakTime = false
-        var breakTime: Int? = 1 // Default 5 minutes for break
+        var breakTime: Int? = 1
         var isMotionDetectionOn = true
 
         var currentSymbol: String {
@@ -143,8 +147,6 @@ extension HomeScreen {
             guard currentState == .idle else {
                 return false
             }
-
-            print("📱 Starting monitoring session")
             currentState = .running
             remainingTime = selectedDuration
             startDate = Date()
@@ -174,13 +176,10 @@ extension HomeScreen {
                     }
                 }
             }
-
-            print("✅ Monitoring session started successfully")
             return true
         }
 
         func stopMonitoring() async {
-            print("🛑 Stopping monitoring session")
             let wasFinished = remainingTime == 0
             currentState = wasFinished ? .finished : .stopped
 
@@ -209,17 +208,12 @@ extension HomeScreen {
 
             // Send notification before changing state
             sendMonitoringStoppedNotification()
-            print("currentState: \(currentState), isBreakTime: \(isBreakTime)")
             stopLiveActivity()
 
             if wasFinished {
                 handleSessionComplete()
             }
-
-            print("✅ Monitoring session stopped")
         }
-
-        func sendPhoneMotionDetectedRudeNotification() {}
 
         func sendMonitoringStoppedNotification() {
             let content = UNMutableNotificationContent()
@@ -231,8 +225,8 @@ extension HomeScreen {
                 content.body = "Time to get back to work! Start your next focused session."
             case (.finished, false):
                 // Work session completed successfully
-                content.title = "Pomodoro Session Complete!"
-                content.body = "Great job! You've earned a break. Take some time to recharge."
+                notificationManager.sendSuccessNotification()
+                return
             case (.stopped, true):
                 // Break interrupted
                 content.title = "Break Interrupted"
@@ -277,7 +271,7 @@ extension HomeScreen {
             )
             let content = ActivityContent(state: initialState, staleDate: nil, relevanceScore: 0.0)
             do {
-                activity = try Activity.request(
+                liveActivity = try Activity.request(
                     attributes: adventure,
                     content: content,
                     pushType: nil
@@ -308,7 +302,7 @@ extension HomeScreen {
                     liveActivityMessage: liveActivityMessage
                 )
                 let dismissalPolicy: ActivityUIDismissalPolicy = .default
-                await activity?.end(
+                await liveActivity?.end(
                     ActivityContent(state: finalContent, staleDate: nil),
                     dismissalPolicy: dismissalPolicy
                 )
