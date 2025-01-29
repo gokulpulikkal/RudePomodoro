@@ -19,7 +19,7 @@ extension HomeScreen {
     class ViewModel {
         // MARK: - Properties
 
-        private let motionManager: PhoneMotionManager
+        private let motionManager: MotionDetectorProtocol
         private let musicManager: MusicServiceProtocol
         private let notificationManager: NotificationManager
         private let sessionHistoryManager: SessionHistoryManager
@@ -84,7 +84,7 @@ extension HomeScreen {
 
         init(
             musicManager: MusicServiceProtocol = MusicManager(),
-            motionManager: PhoneMotionManager = PhoneMotionManager(),
+            motionManager: MotionDetectorProtocol = MotionDetector(),
             notificationManager: NotificationManager = NotificationManager(),
             sessionHistoryManager: SessionHistoryManager = SessionHistoryManager()
         ) {
@@ -93,7 +93,7 @@ extension HomeScreen {
             self.notificationManager = notificationManager
             self.sessionHistoryManager = sessionHistoryManager
             setInitialValues()
-            setObservers()
+//            setObservers()
         }
 
         func setModelContext(_ context: ModelContext) {
@@ -102,20 +102,21 @@ extension HomeScreen {
 
         // MARK: - Monitoring Control
 
-        /// Needs refactoring
-        func setObservers() {
-            motionManager.onDetectingMotion = { [weak self] currentState in
-                guard let self, let lastUpdate, isMotionDetectionOn else {
-                    return
-                }
-                if Date().timeIntervalSince(lastUpdate) > 3 { // 3  seconds gap
-                    if currentState == .lifted {
-                        self.lastUpdate = Date()
-                        notificationManager.sendRudeNotification()
-                    }
-                }
-            }
-        }
+//
+//        /// Needs refactoring
+//        func setObservers() {
+//            motionManager.onDetectingMotion = { [weak self] currentState in
+//                guard let self, let lastUpdate, isMotionDetectionOn else {
+//                    return
+//                }
+//                if Date().timeIntervalSince(lastUpdate) > 3 { // 3  seconds gap
+//                    if currentState == .lifted {
+//                        self.lastUpdate = Date()
+//                        notificationManager.sendRudeNotification()
+//                    }
+//                }
+//            }
+//        }
 
         func setSelectedDuration() {
             selectedDuration = Double(timerTime ?? 10) * 60
@@ -156,7 +157,7 @@ extension HomeScreen {
             if !isBreakTime {
                 await musicManager.startPlayback()
                 // Then start motion detection
-                motionManager.startMonitoring()
+                await motionManager.startMonitoring()
             }
             startLiveActivity()
             // Start countdown timer
@@ -195,7 +196,7 @@ extension HomeScreen {
                 }
 
                 // Stop motion detection
-                motionManager.stopMonitoring()
+                await motionManager.stopMonitoring()
                 isMute = true
                 await musicManager.stopPlayback()
             }
