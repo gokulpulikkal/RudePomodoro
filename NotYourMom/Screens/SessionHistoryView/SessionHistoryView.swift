@@ -17,19 +17,20 @@ struct SessionHistoryView: View {
     ]
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                navBar
-                if sessionsList.isEmpty {
-                    noHistoryView
-                } else {
-                    WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
-                        .padding([.horizontal, .bottom])
-                        .frame(maxWidth: 900)
-                    sessionHistoryList
-                }
+        VStack(spacing: 0) {
+            navBar
+            if sessionsList.isEmpty {
+                noHistoryView
+            } else {
+                WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
+                    .padding([.horizontal, .bottom])
+                    .frame(maxWidth: 900)
+                sessionHistoryList
             }
+        }
+        .overlay {
             bottomSnackBarForPremium
+                .opacity(1)
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
