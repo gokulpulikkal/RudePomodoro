@@ -34,9 +34,8 @@ struct HomeScreen: View {
                                     }
                                 }
                             actionButton
-                            if viewModel.isBreakSession, viewModel.currentState == .idle {
-                                skipBreakButton
-                            }
+                            skipBreakButton
+                                .opacity(viewModel.showSkipButton() ? 1 : 0)
                         }
                         .opacity(viewModel.isTimerEditing ? 0 : 1)
                         .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
@@ -46,7 +45,7 @@ struct HomeScreen: View {
                     }
                 }
                 featureToggles
-                    .disabled(viewModel.currentState != .running)
+                    .disabled(!viewModel.showFeatureToggleButtons())
             }
             .padding(.vertical)
             .background(
@@ -130,9 +129,6 @@ extension HomeScreen {
     var skipBreakButton: some View {
         Button(action: {
             viewModel.skipBreak()
-            Task { @MainActor in
-                viewModel.rivAnimModel.triggerInput("reset")
-            }
         }, label: {
             Text("Skip Break")
                 .font(.sourGummy(.regular, size: 16))
