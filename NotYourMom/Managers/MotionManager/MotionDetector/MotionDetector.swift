@@ -38,7 +38,7 @@ actor MotionDetector: MotionDetectorProtocol {
     // MARK: - Motion processing
 
     func processMotion(_ motion: CMDeviceMotion) {
-        print(motion)
+//        print(motion)
     }
 
 }

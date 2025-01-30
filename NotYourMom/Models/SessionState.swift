@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AnimationActions {
+enum SessionState {
     case idle
     case running
     case stopped

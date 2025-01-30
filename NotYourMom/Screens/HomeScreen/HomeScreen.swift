@@ -16,8 +16,6 @@ struct HomeScreen: View {
     @State private var showingHistory = false
     @State private var viewModel = ViewModel()
 
-    let rivAnimModel = RiveViewModel(fileName: "pomoNoBG", stateMachineName: "State Machine")
-
     var body: some View {
         ZStack {
             ZStack {
@@ -36,7 +34,7 @@ struct HomeScreen: View {
                                     }
                                 }
                             actionButton
-                            if viewModel.isBreakTime, viewModel.currentState == .idle {
+                            if viewModel.isBreakSession, viewModel.currentState == .idle {
                                 skipBreakButton
                             }
                         }
@@ -62,9 +60,6 @@ struct HomeScreen: View {
         }
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
-        .onChange(of: viewModel.currentState) {
-            handleAnimationStates()
-        }
         .gesture(
             DragGesture()
                 .onEnded { gesture in
@@ -107,7 +102,7 @@ extension HomeScreen {
     }
 
     var rivAnimation: some View {
-        rivAnimModel.view()
+        viewModel.rivAnimModel.view()
             .aspectRatio(contentMode: .fit)
     }
 
@@ -120,11 +115,9 @@ extension HomeScreen {
 
     var actionButton: some View {
         Button(action: {
-            Task {
-                await handleActionButtons()
-            }
+            viewModel.onMainActionButtonPress()
         }, label: {
-            Text(viewModel.currentSymbol)
+            Text(viewModel.actionButtonText)
                 .font(.sourGummy(.regular, size: 20))
                 .bold()
                 .foregroundStyle(.white)
@@ -138,7 +131,7 @@ extension HomeScreen {
         Button(action: {
             viewModel.skipBreak()
             Task { @MainActor in
-                rivAnimModel.triggerInput("reset")
+                viewModel.rivAnimModel.triggerInput("reset")
             }
         }, label: {
             Text("Skip Break")
@@ -154,11 +147,10 @@ extension HomeScreen {
 
     var timeSelectorView: some View {
         VStack(spacing: 30) {
-            TimePickerView(position: viewModel.isBreakTime ? $viewModel.breakTime : $viewModel.timerTime)
+            TimePickerView(position: viewModel.isBreakSession ? $viewModel.breakTime : $viewModel.timerTime)
                 .frame(height: 150)
             Button(action: {
                 viewModel.isTimerEditing = false
-                viewModel.setSelectedDuration()
             }, label: {
                 Text("Done")
                     .font(.sourGummy(.regular, size: 20))
@@ -200,61 +192,6 @@ extension HomeScreen {
                 .foregroundStyle(.white)
             }
             .padding(30)
-        }
-    }
-
-    func handleActionButtons() async {
-        switch viewModel.currentState {
-        case .idle:
-            if await viewModel.startMonitoring() {
-                if !viewModel.isBreakTime {
-                    triggerAnimation(trigger: .start)
-                } else {
-                    triggerAnimation(trigger: .reset)
-                }
-            }
-        case .running:
-            await viewModel.stopMonitoring()
-            if !viewModel.isBreakTime {
-                triggerAnimation(trigger: .stop)
-            }
-        case .stopped:
-            viewModel.setInitialValues()
-            if !viewModel.isBreakTime {
-                triggerAnimation(trigger: .reset)
-            }
-        case .finished:
-            viewModel.setInitialValues()
-            if !viewModel.isBreakTime {
-                triggerAnimation(trigger: .reset)
-            }
-        }
-    }
-
-    func handleAnimationStates() {
-        switch viewModel.currentState {
-        case .finished:
-            if !viewModel.isBreakTime {
-                print("Calling the finish!!")
-                triggerAnimation(trigger: .finish)
-            }
-        default:
-            print("No need of handling! for the state \(viewModel.currentState)")
-        }
-    }
-
-    func triggerAnimation(trigger: AnimationTriggers) {
-        Task { @MainActor in
-            switch trigger {
-            case .start:
-                rivAnimModel.triggerInput("start")
-            case .stop:
-                rivAnimModel.triggerInput("stop")
-            case .finish:
-                rivAnimModel.triggerInput("finish")
-            case .reset:
-                rivAnimModel.triggerInput("reset")
-            }
         }
     }
 }
