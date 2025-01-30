@@ -44,7 +44,11 @@ extension HomeScreen {
         var liveActivity: Activity<RudePomoWidgetAttributes>?
 
         /// Pomo current state
-        var currentState: SessionState = .idle
+        var currentState: SessionState = .idle {
+            didSet {
+                handleAnimationForCurrentState()
+            }
+        }
 
         /// Time picker binding variable for the main session
         var timerTime: Int? = 1 {
@@ -76,46 +80,12 @@ extension HomeScreen {
 
         /// button text to show in main action button w.r.t to the currentState
         var actionButtonText: String {
-            switch currentState {
-            case .idle:
-                "Start"
-            case .running:
-                "Stop"
-            case .stopped:
-                "Reset"
-            case .finished:
-                if isBreakSession {
-                    "Let's Go"
-                } else {
-                    "Start break"
-                }
-            }
+            getActionButtonText()
         }
 
         /// message to show on top of the pomo animation
         var pomoMessage: String {
-            switch currentState {
-            case .idle:
-                if isBreakSession {
-                    "Time for a break! Set your break duration or skip it."
-                } else {
-                    "Pomo's chilling right now, but you should get to work before it judges you."
-                }
-            case .running:
-                if isBreakSession {
-                    "Enjoy your break! Pomo's making sure you relax properly."
-                } else {
-                    "Shhh... Pomo's in a deep nap. Don't make it mad! Put your phone down and do some work"
-                }
-            case .stopped:
-                "Rude! You woke Pomo up! It's giving you side-eye right now."
-            case .finished:
-                if isBreakSession {
-                    "Break time's over! Ready for another focused session?"
-                } else {
-                    "Boom! Pomo's feeling fresh and fabulous after that nap. Time for a break!"
-                }
-            }
+            getPomoMessage()
         }
 
         // MARK: - Init
@@ -140,6 +110,89 @@ extension HomeScreen {
             sessionHistoryManager.setModelContext(context)
         }
 
+        // MARK: - Ui values
+
+        private func getActionButtonText() -> String {
+            switch currentState {
+            case .idle:
+                "Start"
+            case .running:
+                "Stop"
+            case .stopped:
+                "Reset"
+            case .finished:
+                if isBreakSession {
+                    "Let's Go"
+                } else {
+                    "Start break"
+                }
+            }
+        }
+
+        private func getPomoMessage() -> String {
+            switch currentState {
+            case .idle:
+                if isBreakSession {
+                    "Time for a break! Set your break duration or skip it."
+                } else {
+                    "Pomo's chilling right now, but you should get to work before it judges you."
+                }
+            case .running:
+                if isBreakSession {
+                    "Enjoy your break! Pomo's making sure you relax properly."
+                } else {
+                    "Shhh... Pomo's in a deep nap. Don't make it mad! Put your phone down and do some work"
+                }
+            case .stopped:
+                "Rude! You woke Pomo up! It's giving you side-eye right now."
+            case .finished:
+                if isBreakSession {
+                    "Break time's over! Ready for another focused session?"
+                } else {
+                    "Boom! Pomo's feeling fresh and fabulous after that nap. Time for a break!"
+                }
+            }
+        }
+
+        // MARK: - Animation trigger
+
+        private func handleAnimationForCurrentState() {
+            switch currentState {
+            case .idle:
+                triggerAnimation(trigger: .reset)
+            case .running:
+                guard !isBreakSession else {
+                    return
+                }
+                triggerAnimation(trigger: .start)
+            case .stopped:
+                guard !isBreakSession else {
+                    return
+                }
+                triggerAnimation(trigger: .stop)
+            case .finished:
+                guard !isBreakSession else {
+                    return
+                }
+                triggerAnimation(trigger: .finish)
+            }
+        }
+
+        private func triggerAnimation(trigger: AnimationTriggers) {
+            Task { @MainActor in
+                switch trigger {
+                case .start:
+                    rivAnimModel.triggerInput("start")
+                case .stop:
+                    rivAnimModel.triggerInput("stop")
+                case .finish:
+                    rivAnimModel.triggerInput("finish")
+                case .reset:
+                    rivAnimModel.triggerInput("reset")
+                }
+            }
+        }
+
         // MARK: - Button actions
 
         func onMainActionButtonPress() {
@@ -149,7 +202,7 @@ extension HomeScreen {
             case .running:
                 endSession()
             case .stopped:
-                resetPomo()
+                setInitialValues()
             case .finished:
                 if !isBreakSession {
                     startBreakSession()
@@ -157,10 +210,6 @@ extension HomeScreen {
                     setInitialValues()
                 }
             }
-        }
-
-        private func resetPomo() {
-            setInitialValues()
         }
 
         // MARK: - Monitoring Control
@@ -229,6 +278,19 @@ extension HomeScreen {
             startSession()
         }
 
+        /// Add method to skip break
+        func skipBreak() {
+            guard isBreakSession else {
+                return
+            }
+            isBreakSession = false
+            setInitialValues()
+        }
+
+        private func isSessionComplete() -> Bool {
+            remainingTime == 0
+        }
+
         /// Starts the session. This function is responsible for starting the timer for the session, motion monitoring
         /// and audio playback starting
         func startSession() {
@@ -258,10 +320,10 @@ extension HomeScreen {
             }
             stopLiveActivity()
             clearSessionTimer()
-            setPomoTimerValues(!isBreakSession)
+            resetTimerValues(!isBreakSession)
         }
 
-        private func setPomoTimerValues(_ isForBreakSession: Bool) {
+        private func resetTimerValues(_ isForBreakSession: Bool) {
             guard currentState == .finished else {
                 return
             }
@@ -270,10 +332,6 @@ extension HomeScreen {
             } else {
                 remainingTime = Double(timerTime ?? 25) * 60
             }
-        }
-
-        private func isSessionComplete() -> Bool {
-            remainingTime == 0
         }
 
         private func saveSession() {
@@ -382,26 +440,5 @@ extension HomeScreen {
                 )
             }
         }
-
-        /// Add method to skip break
-        func skipBreak() {
-            if isBreakSession {
-                isBreakSession = false
-                setInitialValues()
-            }
-        }
     }
 }
-
-// func triggerAnimation(trigger: AnimationTriggers) {
-//    switch trigger {
-//    case .start:
-//        viewModel.rivAnimModel.triggerInput("start")
-//    case .stop:
-//        viewModel.rivAnimModel.triggerInput("stop")
-//    case .finish:
-//        viewModel.rivAnimModel.triggerInput("finish")
-//    case .reset:
-//        viewModel.rivAnimModel.triggerInput("reset")
-//    }
-// }
