@@ -6,23 +6,37 @@
 //
 
 import Foundation
+import RevenueCat
+import RevenueCatUI
 import SwiftData
 import SwiftUI
 
 struct SessionHistoryView: View {
+
     @Query(sort: \PomodoroSession.startDate, order: .reverse) var sessionsList: [PomodoroSession]
+    @Environment(PurchaseManager.self) var purchaseManager: PurchaseManager
     @Binding var isShowing: Bool
+
     private let columns = [
         GridItem(.adaptive(minimum: 360, maximum: 360), spacing: 50)
     ]
 
+    @State var viewModel = ViewModel()
+
     var body: some View {
         VStack(spacing: 0) {
             navBar
-            if sessionsList.isEmpty {
-                noHistoryView
+            if purchaseManager.isEntitled {
+                if sessionsList.isEmpty {
+                    noHistoryView
+                } else {
+                    WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
+                        .padding([.horizontal, .bottom])
+                        .frame(maxWidth: 900)
+                    sessionHistoryList
+                }
             } else {
-                WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
+                WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: viewModel.dummyChartItems))
                     .padding([.horizontal, .bottom])
                     .frame(maxWidth: 900)
                 sessionHistoryList
@@ -30,7 +44,7 @@ struct SessionHistoryView: View {
         }
         .overlay {
             bottomSnackBarForPremium
-                .opacity(1)
+                .opacity(purchaseManager.isEntitled ? 0 : 1)
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -38,6 +52,19 @@ struct SessionHistoryView: View {
             RadialGradientView()
                 .ignoresSafeArea()
         )
+        .sheet(isPresented: $viewModel.displayPaywall, onDismiss: {
+            Task {
+                do {
+                    let customerInfo = try await Purchases.shared.customerInfo()
+                    purchaseManager.isEntitled = customerInfo.entitlements.active.keys.contains("Pro")
+                    print("The user now is entitled \(purchaseManager.isEntitled)")
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }) {
+            PaywallView(displayCloseButton: true)
+        }
     }
 }
 
@@ -78,7 +105,7 @@ extension SessionHistoryView {
             LazyVGrid(columns: columns, spacing: 18) {
                 Section {
                     // Here goes the items
-                    ForEach(sessionsList) { session in
+                    ForEach(!purchaseManager.isEntitled ? viewModel.dummyChartItems : sessionsList) { session in
                         SessionRowView(session: session)
                     }
                 }
@@ -92,8 +119,10 @@ extension SessionHistoryView {
             HStack(spacing: 20) {
                 Text("This is demo chart, subscribe to unlock this feature")
                     .font(.sourGummy(.regular, size: 14))
-                Button(action: {}, label: {
-                    Text("Try Free")
+                Button(action: {
+                    viewModel.displayPaywall = true
+                }, label: {
+                    Text("Subscribe")
                         .font(.sourGummy(.regular, size: 16))
                         .bold()
                         .foregroundStyle(.white)
@@ -109,15 +138,6 @@ extension SessionHistoryView {
 }
 
 #Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: PomodoroSession.self, configurations: config)
-
-    // Add sample data to container
-    let context = container.mainContext
-    PreviewData.generateSessions().forEach { session in
-        context.insert(session)
-    }
-
-    return SessionHistoryView(isShowing: .constant(true))
-        .modelContainer(container)
+    SessionHistoryView(isShowing: .constant(true))
+        .environment(PurchaseManager())
 }
