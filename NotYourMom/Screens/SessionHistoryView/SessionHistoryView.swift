@@ -77,6 +77,7 @@ extension SessionHistoryView {
                 .padding(.vertical)
             HStack {
                 Button(action: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     withAnimation {
                         isShowing = false
                     }

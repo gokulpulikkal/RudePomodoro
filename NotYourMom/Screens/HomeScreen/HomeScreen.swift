@@ -113,6 +113,7 @@ extension HomeScreen {
 
     var actionButton: some View {
         Button(action: {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             viewModel.onMainActionButtonPress()
         }, label: {
             Text(viewModel.actionButtonText)
@@ -163,6 +164,7 @@ extension HomeScreen {
             Spacer()
             HStack {
                 Button(action: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     withAnimation {
                         showingHistory = true
                     }
