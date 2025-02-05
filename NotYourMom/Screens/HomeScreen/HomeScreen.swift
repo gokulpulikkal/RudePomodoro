@@ -45,7 +45,6 @@ struct HomeScreen: View {
                     }
                 }
                 featureToggles
-                    .disabled(!viewModel.showFeatureToggleButtons())
             }
             .padding(.vertical)
             .background(
@@ -55,7 +54,7 @@ struct HomeScreen: View {
             // Session history view
             SessionHistoryView(isShowing: $showingHistory)
                 .opacity(!showingHistory ? 0 : 1)
-                .offset(x: showingHistory ? 0 : UIScreen.main.bounds.width)
+                .offset(x: showingHistory ? 0 : -UIScreen.main.bounds.width)
         }
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
@@ -63,7 +62,7 @@ struct HomeScreen: View {
             DragGesture()
                 .onEnded { gesture in
                     let threshold: CGFloat = 50
-                    if viewModel.currentState != .running, gesture.translation.width < -threshold {
+                    if viewModel.currentState != .running, gesture.translation.width > threshold {
                         withAnimation {
                             showingHistory = true
                         }
@@ -163,6 +162,16 @@ extension HomeScreen {
         VStack {
             Spacer()
             HStack {
+                Button(action: {
+                    withAnimation {
+                        showingHistory = true
+                    }
+                }, label: {
+                    Image(systemName: "chart.xyaxis.line")
+                        .font(.system(size: 20))
+                        .frame(width: 20, height: 20, alignment: .center)
+                        .contentTransition(.symbolEffect(.replace))
+                })
                 Spacer()
                 HStack(spacing: 20) {
                     Button(action: {
@@ -184,9 +193,10 @@ extension HomeScreen {
                         .frame(width: 20, height: 20, alignment: .center)
                     })
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                .disabled(!viewModel.showFeatureToggleButtons())
             }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
             .padding(30)
         }
     }
@@ -196,5 +206,6 @@ struct HomeScreen_Preview: PreviewProvider {
     static var previews: some View {
         HomeScreen()
             .modelContainer(for: PomodoroSession.self)
+            .environment(PurchaseManager())
     }
 }
