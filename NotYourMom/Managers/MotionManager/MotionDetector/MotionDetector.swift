@@ -22,6 +22,8 @@ class MotionDetector: MotionDetectorProtocol {
     private let motionQueue = OperationQueue()
     private var currentState: PhoneState = .flat
     private var isMotionDetecting = false
+    private let minimumTimeBetweenNotifications: TimeInterval = 6 // cooldown
+    private var lastUpdate: Date?
 
     private var motionDetectionService: MotionServiceProtocol
     /// Notification manager instance to handle all the notification related tasks
@@ -76,14 +78,18 @@ class MotionDetector: MotionDetectorProtocol {
                 attitude.pitch > pitchThreshold
         )
 
-        let oldState = currentState
+//        let oldState = currentState
         if currentState == .flat, isLifted || isQuickLift {
             currentState = .lifted
         } else if currentState == .lifted, abs(gravity.z) > 0.8 {
             currentState = .flat
         }
 
-        if oldState != currentState {
+        if currentState == .lifted {
+            if let lastUpdateDate = self.lastUpdate, Date().timeIntervalSince(lastUpdateDate) < minimumTimeBetweenNotifications {
+                return
+            }
+            self.lastUpdate = Date()
             notificationManager.sendRudeNotification()
         }
     }
