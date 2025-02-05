@@ -27,7 +27,7 @@ struct NotYourMomApp: App {
     }
 
     private func setUPRevenueCat() {
-        Purchases.logLevel = .debug
+//        Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: "appl_xMElYuadfMMrEHjMsuJdLoCfSDd")
     }
 
@@ -45,6 +45,7 @@ struct NotYourMomApp: App {
                         purchaseManager.isEntitled = customerInfo.entitlements.active.keys.contains("Pro")
                         print("The user now is entitled \(purchaseManager.isEntitled)")
                     }
+                    
                 )
                 .task {
                     await checkEntitlement()

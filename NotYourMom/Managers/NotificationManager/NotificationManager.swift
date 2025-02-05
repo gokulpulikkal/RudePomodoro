@@ -8,7 +8,7 @@
 import Foundation
 import UserNotifications
 
-actor NotificationManager {
+class NotificationManager {
 
     private let rudeMessages = [
         "Shouldn't you be working right now?",

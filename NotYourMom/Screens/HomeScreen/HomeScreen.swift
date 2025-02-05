@@ -174,7 +174,7 @@ extension HomeScreen {
                             .contentTransition(.symbolEffect(.replace))
                     })
                     Button(action: {
-                        viewModel.isMotionDetectionOn.toggle()
+                        viewModel.toggleMotionMonitoring()
                     }, label: {
                         Image(
                             systemName: "iphone.gen3.radiowaves.left.and.right",

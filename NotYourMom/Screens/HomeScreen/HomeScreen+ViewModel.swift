@@ -149,7 +149,7 @@ extension HomeScreen {
                 } else {
                     "Rude! You woke Pomo up! It's giving you side-eye right now."
                 }
-                
+
             case .finished:
                 if isBreakSession {
                     "Break time's over! Ready for another focused session?"
@@ -237,23 +237,24 @@ extension HomeScreen {
         func showSkipButton() -> Bool {
             currentState == .finished && !isBreakSession
         }
-        
+
         func showFeatureToggleButtons() -> Bool {
             currentState == .running && !isBreakSession
         }
 
         // TODO: Function to toggle motion detection
         func toggleMotionMonitoring() {
-            guard currentState == .running && !isBreakSession else { return }
+            guard currentState == .running, !isBreakSession else {
+                return
+            }
             if isMotionDetectionOn {
-                Task {
-                    await motionManager.stopMonitoring()
-                }
+                motionManager.stopMonitoring()
             } else {
                 Task {
                     await motionManager.startMonitoring()
                 }
             }
+            isMotionDetectionOn.toggle()
         }
 
         // MARK: - Monitoring Control
@@ -268,22 +269,11 @@ extension HomeScreen {
             countdownTimer = nil
         }
 
-        /// This function will start the music and motion manager sessions
-        private func startMonitoringManagers() {
-            isMute = true
-            Task.detached { [weak self] in
-                await self?.musicManager.startPlayback()
-                await self?.motionManager.startMonitoring()
-            }
-        }
-
         /// Stops the music and motion manager sessions
         private func stopMonitoringMangers() {
             isMute = true
-            Task { [weak self] in
-                await self?.motionManager.stopMonitoring()
-                await self?.musicManager.stopPlayback()
-            }
+            motionManager.stopMonitoring()
+            musicManager.stopPlayback()
         }
 
         /// Function to start the session countdown timer
@@ -319,7 +309,9 @@ extension HomeScreen {
 
         /// Add method to skip break
         func skipBreak() {
-            guard currentState == .finished else { return }
+            guard currentState == .finished else {
+                return
+            }
             setInitialValues()
         }
 
@@ -334,8 +326,14 @@ extension HomeScreen {
             guard currentState == .idle else {
                 return
             }
+            musicManager.startPlayback()
             if !isBreakSession {
-                startMonitoringManagers()
+                isMute = true
+                isMotionDetectionOn = true
+                Task.detached { [weak self] in
+
+                    await self?.motionManager.startMonitoring()
+                }
             }
             currentState = .running
             startSessionTimer()
@@ -390,26 +388,24 @@ extension HomeScreen {
 
         /// sends monitoring stopped notification with user local notification
         func sendMonitoringStoppedNotification() {
-            Task { [currentState, isBreakSession] in
-                switch (currentState, isBreakSession) {
-                case (.finished, true):
-                    let title = "Break Time Complete!"
-                    let body = "Time to get back to work! Start your next focused session."
-                    await notificationManager.sendNotification(title, body: body)
-                case (.finished, false):
-                    await notificationManager.sendSuccessNotification()
-                    return
-                case (.stopped, true):
-                    let title = "Break Interrupted"
-                    let body = "Your break session was stopped before completion."
-                    await notificationManager.sendNotification(title, body: body)
-                case (.stopped, false):
-                    let title = "Work Session Interrupted"
-                    let body = "Your Pomodoro session was stopped before completion."
-                    await notificationManager.sendNotification(title, body: body)
-                default:
-                    return
-                }
+            switch (currentState, isBreakSession) {
+            case (.finished, true):
+                let title = "Break Time Complete!"
+                let body = "Time to get back to work! Start your next focused session."
+                notificationManager.sendNotification(title, body: body)
+            case (.finished, false):
+                notificationManager.sendSuccessNotification()
+                return
+            case (.stopped, true):
+                let title = "Break Interrupted"
+                let body = "Your break session was stopped before completion."
+                notificationManager.sendNotification(title, body: body)
+            case (.stopped, false):
+                let title = "Work Session Interrupted"
+                let body = "Your Pomodoro session was stopped before completion."
+                notificationManager.sendNotification(title, body: body)
+            default:
+                return
             }
         }
 

@@ -10,5 +10,5 @@ import Foundation
 protocol MotionDetectorProtocol {
     func startMonitoring() async
 
-    func stopMonitoring() async
+    func stopMonitoring()
 }
