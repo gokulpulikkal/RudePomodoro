@@ -413,14 +413,14 @@ extension HomeScreen {
 
         /// Starts live activity
         func startLiveActivity() {
-            Task { [isBreakSession, timerTime, sessionStartDate] in
+            Task { [isBreakSession, timerTime, breakTime, sessionStartDate] in
                 let message: LiveActivityMessage = isBreakSession
                     ? .init(title: "Break Time", body: "Taking a well-deserved break")
                     : .init(title: "Pomo is sleeping", body: "Focus time!")
 
                 let initialState = RudePomoWidgetAttributes.ContentState(
                     startDate: sessionStartDate,
-                    timerDuration: Double(timerTime ?? 10) * 60,
+                    timerDuration: isBreakSession ? Double(breakTime ?? 10) * 60 : Double(timerTime ?? 10) * 60,
                     liveActivityMessage: message
                 )
                 await liveActivityManager.startLiveActivity(initialState)
