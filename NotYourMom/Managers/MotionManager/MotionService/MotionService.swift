@@ -15,12 +15,10 @@ class MotionService: MotionServiceProtocol {
     func getMotionUpdateStream() -> AsyncStream<CMDeviceMotion> {
         AsyncStream { continuation in
             let motionManager = CMMotionManager()
-            continuation.onTermination = { @Sendable [weak self] _ in
-                self?.stopMonitoring(motionManager)
+            continuation.onTermination = { @Sendable _ in
+                self.stopMonitoring(motionManager)
             }
-            Task.detached { [weak self] in
-                self?.startMonitoring(motionManager, continuation)
-            }
+            startMonitoring(motionManager, continuation)
         }
     }
 

@@ -10,7 +10,7 @@ import UserNotifications
 
 class NotificationManager {
 
-    private let rudeMessages = [
+    private let defaultRudeMessages = [
         "Shouldn't you be working right now?",
         "Put the phone down and do something useful!",
         "Your future self will regret this wasted time.",
@@ -63,7 +63,7 @@ class NotificationManager {
         "You’re capable of more. Show it!"
     ]
 
-    private let successMessages = [
+    private let defaultSuccessMessages = [
         "Nice work! Your future self is thanking you right now.",
         "You stayed focused, and it paid off! Keep it up!",
         "That’s how you get things done! Keep crushing it!",
@@ -106,14 +106,40 @@ class NotificationManager {
         "The path to success is built on moments like this!"
     ]
 
+    private var aiRudeMessagesLevelIndexed: [String] = []
+
+    private var rudenessLevel: Int
+    
+    private let rudenessLimit: Int = 10
+
+    init() {
+        self.rudenessLevel = 0
+        Task {
+            try? await requestPermission()
+        }
+    }
+
+    func sessionStarted() {
+        // Initial rudeness level
+        rudenessLevel = 0
+    }
+
     func requestPermission() async throws -> Bool {
         try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .criticalAlert])
+    }
+
+    private func getRudeMessage() -> RudeMessage {
+        guard !aiRudeMessagesLevelIndexed.isEmpty, rudenessLevel > rudenessLimit else {
+            return RudeMessage(title: "Stay focused!", body: defaultRudeMessages.randomElement() ?? "Stay focused!")
+        }
+        rudenessLevel += 1
+        return RudeMessage(title: "Stay focused!", body: defaultRudeMessages.randomElement() ?? "Stay focused!")
     }
 
     func sendRudeNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Stay focused!"
-        content.body = rudeMessages.randomElement() ?? "Stay focused!"
+        content.body = defaultRudeMessages.randomElement() ?? "Stay focused!"
         content.sound = .default
         content.interruptionLevel = .critical
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)
@@ -129,7 +155,7 @@ class NotificationManager {
     func sendSuccessNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Pomodoro Session Complete!"
-        content.body = successMessages.randomElement() ?? ""
+        content.body = defaultSuccessMessages.randomElement() ?? ""
         content.sound = .default
         content.interruptionLevel = .critical
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)

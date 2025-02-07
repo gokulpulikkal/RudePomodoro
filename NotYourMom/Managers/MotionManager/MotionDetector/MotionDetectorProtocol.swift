@@ -7,8 +7,8 @@
 
 import Foundation
 
-protocol MotionDetectorProtocol {
-    func startMonitoring() async
+protocol MotionDetectorProtocol {    
+    func hasDetectedMotion() -> AsyncStream<Bool>
 
     func stopMonitoring()
 }

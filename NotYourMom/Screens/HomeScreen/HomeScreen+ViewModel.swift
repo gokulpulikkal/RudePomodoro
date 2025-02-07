@@ -248,10 +248,10 @@ extension HomeScreen {
                 return
             }
             if isMotionDetectionOn {
-                motionManager.stopMonitoring()
+                stopMotionMonitoring()
             } else {
                 Task {
-                    await motionManager.startMonitoring()
+                    await startMotionMonitoring()
                 }
             }
             isMotionDetectionOn.toggle()
@@ -269,10 +269,25 @@ extension HomeScreen {
             countdownTimer = nil
         }
 
+        /// Monitors the async stream from motion monitoring manager
+        func startMotionMonitoring() async {
+            for await motionDetected in motionManager.hasDetectedMotion() {
+                if !motionDetected {
+                    continue
+                }
+                notificationManager.sendRudeNotification()
+            }
+        }
+
+        /// Cancel the motionManager asyncSequence task
+        func stopMotionMonitoring() {
+            motionManager.stopMonitoring()
+        }
+
         /// Stops the music and motion manager sessions
         private func stopMonitoringMangers() {
             isMute = true
-            motionManager.stopMonitoring()
+            stopMotionMonitoring()
             musicManager.stopPlayback()
         }
 
@@ -328,11 +343,11 @@ extension HomeScreen {
             }
             musicManager.startPlayback()
             if !isBreakSession {
+                notificationManager.sessionStarted()
                 isMute = true
                 isMotionDetectionOn = true
-                Task.detached { [weak self] in
-
-                    await self?.motionManager.startMonitoring()
+                Task {
+                    await startMotionMonitoring()
                 }
             }
             currentState = .running

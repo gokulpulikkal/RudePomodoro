@@ -24,27 +24,29 @@ class MotionDetector: MotionDetectorProtocol {
     private var isMotionDetecting = false
     private let minimumTimeBetweenNotifications: TimeInterval = 6 // cooldown
     private var lastUpdate: Date?
+    private var motionDetectionContinuation: AsyncStream<Bool>.Continuation?
 
     private var motionDetectionService: MotionServiceProtocol
-    /// Notification manager instance to handle all the notification related tasks
-    private let notificationManager: NotificationManager
 
     init(
-        motionDetectionService: MotionServiceProtocol = MotionService(),
-        notificationManager: NotificationManager = NotificationManager()
+        motionDetectionService: MotionServiceProtocol = MotionService()
     ) {
         self.motionDetectionService = motionDetectionService
-        self.notificationManager = notificationManager
     }
 
-    func startMonitoring() async {
-        guard !isMotionDetecting else {
-            return
-        }
-        isMotionDetecting = true
-        print("Starting the motion detection!")
-        for await motion in motionDetectionService.getMotionUpdateStream() {
-            processMotionData(motion)
+    func hasDetectedMotion() -> AsyncStream<Bool> {
+        AsyncStream { continuation in
+            guard !isMotionDetecting else {
+                continuation.finish()
+                return
+            }
+            motionDetectionContinuation = continuation
+            isMotionDetecting = true
+            Task {
+                for await motion in motionDetectionService.getMotionUpdateStream() {
+                    continuation.yield(hasDetectedMotion(motion))
+                }
+            }
         }
     }
 
@@ -52,14 +54,14 @@ class MotionDetector: MotionDetectorProtocol {
         guard isMotionDetecting else {
             return
         }
+        motionDetectionContinuation?.finish()
         motionDetectionService.stopStream()
         isMotionDetecting = false
-        print("Stopped the motion detection!")
     }
 
     // MARK: - Motion processing
 
-    private func processMotionData(_ motion: CMDeviceMotion) {
+    private func hasDetectedMotion(_ motion: CMDeviceMotion) -> Bool {
         print("getting the motion data")
         let gravity = motion.gravity
         let userAcceleration = motion.userAcceleration
@@ -86,11 +88,14 @@ class MotionDetector: MotionDetectorProtocol {
         }
 
         if currentState == .lifted {
-            if let lastUpdateDate = self.lastUpdate, Date().timeIntervalSince(lastUpdateDate) < minimumTimeBetweenNotifications {
-                return
+            if let lastUpdateDate = lastUpdate,
+               Date().timeIntervalSince(lastUpdateDate) < minimumTimeBetweenNotifications
+            {
+                return false
             }
-            self.lastUpdate = Date()
-            notificationManager.sendRudeNotification()
+            lastUpdate = Date()
+            return true
         }
+        return false
     }
 }
