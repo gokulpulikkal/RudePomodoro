@@ -11,6 +11,8 @@ import SwiftUI
 
 @Observable
 class SessionHistoryManager {
+
+    /// Whatever fetching or inserting thing on this model context should happen on the Main actor
     private weak var modelContext: ModelContext?
     var sessions: [PomodoroSession] = []
 

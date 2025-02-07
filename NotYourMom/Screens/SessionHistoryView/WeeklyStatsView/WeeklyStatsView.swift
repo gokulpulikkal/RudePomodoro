@@ -10,7 +10,7 @@ import SwiftUI
 
 struct WeeklyStatsView: View {
 
-    let viewModel: ViewModel
+    let weeklyStatsHelper: WeeklyStatsHelper
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -20,11 +20,11 @@ struct WeeklyStatsView: View {
                     .foregroundStyle(.gray)
 
                 HStack(alignment: .firstTextBaseline, spacing: 16) {
-                    Text(viewModel.formattedAverage)
+                    Text(weeklyStatsHelper.formattedAverage)
                         .font(.sourGummy(.bold, size: 24))
                         .foregroundStyle(.white)
 
-                    if let comparison = viewModel.lastWeekComparison {
+                    if let comparison = weeklyStatsHelper.lastWeekComparison {
                         HStack(spacing: 4) {
                             Image(systemName: comparison >= 0 ? "arrow.up" : "arrow.down")
                             Text("\(abs(Int(comparison)))% from last week")
@@ -36,7 +36,7 @@ struct WeeklyStatsView: View {
             }
 
             Chart {
-                ForEach(viewModel.currentWeekStats, id: \.weekday) { stat in
+                ForEach(weeklyStatsHelper.currentWeekStats, id: \.weekday) { stat in
                     BarMark(
                         x: .value("Day", stat.weekday, unit: .weekday),
                         y: .value("Duration", stat.totalMinutes)
@@ -44,7 +44,7 @@ struct WeeklyStatsView: View {
                     .foregroundStyle(Color(hex: "#CB5042"))
                     .annotation(position: .top) {
                         if stat.totalMinutes > 0 {
-                            Text(viewModel.formatDuration(minutes: stat.totalMinutes))
+                            Text(weeklyStatsHelper.formatDuration(minutes: stat.totalMinutes))
                                 .font(.sourGummy(.regular, size: 10))
                                 .foregroundStyle(.white)
                         }
@@ -52,7 +52,7 @@ struct WeeklyStatsView: View {
                 }
 
                 RuleMark(
-                    y: .value("Average", viewModel.weeklyAverage)
+                    y: .value("Average", weeklyStatsHelper.weeklyAverage)
                 )
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
                 .foregroundStyle(Color(hex: "#3B6B2B"))
@@ -79,7 +79,7 @@ struct WeeklyStatsView: View {
                         .foregroundStyle(.gray.opacity(0.3))
                 }
             }
-            .chartYScale(domain: 0...viewModel.maxYValue())
+            .chartYScale(domain: 0...weeklyStatsHelper.maxYValue())
             .frame(height: 200)
         }
         .padding()
@@ -90,7 +90,7 @@ struct WeeklyStatsView: View {
 }
 
 #Preview {
-    WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: PreviewData.generateSessions()))
+    WeeklyStatsView(weeklyStatsHelper: WeeklyStatsHelper(sessions: PreviewData.generateSessions()))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .padding()

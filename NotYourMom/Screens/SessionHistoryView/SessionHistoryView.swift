@@ -30,13 +30,13 @@ struct SessionHistoryView: View {
                 if sessionsList.isEmpty {
                     noHistoryView
                 } else {
-                    WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: sessionsList))
+                    WeeklyStatsView(weeklyStatsHelper: WeeklyStatsHelper(sessions: sessionsList))
                         .padding([.horizontal, .bottom])
                         .frame(maxWidth: 900)
                     sessionHistoryList
                 }
             } else {
-                WeeklyStatsView(viewModel: WeeklyStatsView.ViewModel(sessions: viewModel.dummyChartItems))
+                WeeklyStatsView(weeklyStatsHelper: WeeklyStatsHelper(sessions: viewModel.dummyChartItems))
                     .padding([.horizontal, .bottom])
                     .frame(maxWidth: 900)
                 sessionHistoryList
