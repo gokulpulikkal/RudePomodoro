@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-actor MusicManager: MusicServiceProtocol {
+class MusicManager: MusicServiceProtocol {
     
     private var avPlayer: AVAudioPlayer?
     private let path = Bundle.main.path(forResource: "rain.wav", ofType: nil)

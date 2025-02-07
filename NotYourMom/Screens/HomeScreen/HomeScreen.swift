@@ -16,8 +16,6 @@ struct HomeScreen: View {
     @State private var showingHistory = false
     @State private var viewModel = ViewModel()
 
-    let rivAnimModel = RiveViewModel(fileName: "pomoNoBG", stateMachineName: "State Machine")
-
     var body: some View {
         ZStack {
             ZStack {
@@ -36,9 +34,8 @@ struct HomeScreen: View {
                                     }
                                 }
                             actionButton
-                            if viewModel.isBreakTime, viewModel.currentState == .idle {
-                                skipBreakButton
-                            }
+                            skipBreakButton
+                                .opacity(viewModel.showSkipButton() ? 1 : 0)
                         }
                         .opacity(viewModel.isTimerEditing ? 0 : 1)
                         .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
@@ -48,7 +45,6 @@ struct HomeScreen: View {
                     }
                 }
                 featureToggles
-                    .disabled(viewModel.currentState != .running)
             }
             .padding(.vertical)
             .background(
@@ -58,18 +54,15 @@ struct HomeScreen: View {
             // Session history view
             SessionHistoryView(isShowing: $showingHistory)
                 .opacity(!showingHistory ? 0 : 1)
-                .offset(x: showingHistory ? 0 : UIScreen.main.bounds.width)
+                .offset(x: showingHistory ? 0 : -UIScreen.main.bounds.width)
         }
         .animation(.snappy, value: viewModel.remainingTime)
         .animation(.easeInOut, value: viewModel.isTimerEditing)
-        .onChange(of: viewModel.currentState) {
-            handleAnimationStates()
-        }
         .gesture(
             DragGesture()
                 .onEnded { gesture in
                     let threshold: CGFloat = 50
-                    if viewModel.currentState != .running, gesture.translation.width < -threshold {
+                    if viewModel.currentState != .running, gesture.translation.width > threshold {
                         withAnimation {
                             showingHistory = true
                         }
@@ -107,7 +100,7 @@ extension HomeScreen {
     }
 
     var rivAnimation: some View {
-        rivAnimModel.view()
+        viewModel.rivAnimModel.view()
             .aspectRatio(contentMode: .fit)
     }
 
@@ -120,11 +113,10 @@ extension HomeScreen {
 
     var actionButton: some View {
         Button(action: {
-            Task {
-                await handleActionButtons()
-            }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            viewModel.onMainActionButtonPress()
         }, label: {
-            Text(viewModel.currentSymbol)
+            Text(viewModel.actionButtonText)
                 .font(.sourGummy(.regular, size: 20))
                 .bold()
                 .foregroundStyle(.white)
@@ -137,9 +129,6 @@ extension HomeScreen {
     var skipBreakButton: some View {
         Button(action: {
             viewModel.skipBreak()
-            Task { @MainActor in
-                rivAnimModel.triggerInput("reset")
-            }
         }, label: {
             Text("Skip Break")
                 .font(.sourGummy(.regular, size: 16))
@@ -154,11 +143,10 @@ extension HomeScreen {
 
     var timeSelectorView: some View {
         VStack(spacing: 30) {
-            TimePickerView(position: viewModel.isBreakTime ? $viewModel.breakTime : $viewModel.timerTime)
+            TimePickerView(position: viewModel.isBreakSession ? $viewModel.breakTime : $viewModel.timerTime)
                 .frame(height: 150)
             Button(action: {
                 viewModel.isTimerEditing = false
-                viewModel.setSelectedDuration()
             }, label: {
                 Text("Done")
                     .font(.sourGummy(.regular, size: 20))
@@ -175,6 +163,17 @@ extension HomeScreen {
         VStack {
             Spacer()
             HStack {
+                Button(action: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    withAnimation {
+                        showingHistory = true
+                    }
+                }, label: {
+                    Image(systemName: "chart.xyaxis.line")
+                        .font(.system(size: 20))
+                        .frame(width: 20, height: 20, alignment: .center)
+                        .contentTransition(.symbolEffect(.replace))
+                })
                 Spacer()
                 HStack(spacing: 20) {
                     Button(action: {
@@ -186,7 +185,7 @@ extension HomeScreen {
                             .contentTransition(.symbolEffect(.replace))
                     })
                     Button(action: {
-                        viewModel.isMotionDetectionOn.toggle()
+                        viewModel.toggleMotionMonitoring()
                     }, label: {
                         Image(
                             systemName: "iphone.gen3.radiowaves.left.and.right",
@@ -196,65 +195,11 @@ extension HomeScreen {
                         .frame(width: 20, height: 20, alignment: .center)
                     })
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                .disabled(!viewModel.showFeatureToggleButtons())
             }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
             .padding(30)
-        }
-    }
-
-    func handleActionButtons() async {
-        switch viewModel.currentState {
-        case .idle:
-            if await viewModel.startMonitoring() {
-                if !viewModel.isBreakTime {
-                    triggerAnimation(trigger: .start)
-                } else {
-                    triggerAnimation(trigger: .reset)
-                }
-            }
-        case .running:
-            await viewModel.stopMonitoring()
-            if !viewModel.isBreakTime {
-                triggerAnimation(trigger: .stop)
-            }
-        case .stopped:
-            viewModel.setInitialValues()
-            if !viewModel.isBreakTime {
-                triggerAnimation(trigger: .reset)
-            }
-        case .finished:
-            viewModel.setInitialValues()
-            if !viewModel.isBreakTime {
-                triggerAnimation(trigger: .reset)
-            }
-        }
-    }
-
-    func handleAnimationStates() {
-        switch viewModel.currentState {
-        case .finished:
-            if !viewModel.isBreakTime {
-                print("Calling the finish!!")
-                triggerAnimation(trigger: .finish)
-            }
-        default:
-            print("No need of handling! for the state \(viewModel.currentState)")
-        }
-    }
-
-    func triggerAnimation(trigger: AnimationTriggers) {
-        Task { @MainActor in
-            switch trigger {
-            case .start:
-                rivAnimModel.triggerInput("start")
-            case .stop:
-                rivAnimModel.triggerInput("stop")
-            case .finish:
-                rivAnimModel.triggerInput("finish")
-            case .reset:
-                rivAnimModel.triggerInput("reset")
-            }
         }
     }
 }
@@ -263,5 +208,6 @@ struct HomeScreen_Preview: PreviewProvider {
     static var previews: some View {
         HomeScreen()
             .modelContainer(for: PomodoroSession.self)
+            .environment(PurchaseManager())
     }
 }

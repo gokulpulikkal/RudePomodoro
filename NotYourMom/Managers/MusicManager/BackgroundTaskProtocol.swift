@@ -8,7 +8,7 @@
 import Foundation
 
 protocol MusicServiceProtocol {
-    func startPlayback() async
-    func stopPlayback() async
-    func toggleMute(isMute: Bool) async
+    func startPlayback()
+    func stopPlayback()
+    func toggleMute(isMute: Bool)
 }

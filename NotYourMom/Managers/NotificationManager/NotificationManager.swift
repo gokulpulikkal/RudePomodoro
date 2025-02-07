@@ -62,7 +62,7 @@ class NotificationManager {
         "Your potential is crying in a corner right now.",
         "You’re capable of more. Show it!"
     ]
-    
+
     private let successMessages = [
         "Nice work! Your future self is thanking you right now.",
         "You stayed focused, and it paid off! Keep it up!",
@@ -106,7 +106,6 @@ class NotificationManager {
         "The path to success is built on moments like this!"
     ]
 
-
     func requestPermission() async throws -> Bool {
         try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .criticalAlert])
     }
@@ -126,7 +125,7 @@ class NotificationManager {
 
         UNUserNotificationCenter.current().add(request)
     }
-    
+
     func sendSuccessNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Pomodoro Session Complete!"
@@ -140,6 +139,20 @@ class NotificationManager {
             trigger: trigger
         )
 
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    func sendNotification(_ title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.sound = .default
+        content.title = title
+        content.body = body
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
         UNUserNotificationCenter.current().add(request)
     }
 }

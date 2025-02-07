@@ -11,6 +11,9 @@
 		4B22A16A2D3F3BAE00B1A490 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B22A1692D3F3BAE00B1A490 /* WidgetKit.framework */; };
 		4B22A16C2D3F3BAE00B1A490 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B22A16B2D3F3BAE00B1A490 /* SwiftUI.framework */; };
 		4B22A17D2D3F3BB000B1A490 /* RudePomoWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4B22A1672D3F3BAE00B1A490 /* RudePomoWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		4BEC19722D51A1F100CA3B32 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 4BEC19712D51A1F100CA3B32 /* RevenueCat */; };
+		4BEC19742D51A1F100CA3B32 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4BEC19732D51A1F100CA3B32 /* RevenueCatUI */; };
+		4BEC19762D51A20D00CA3B32 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BEC19752D51A20D00CA3B32 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +61,7 @@
 		4BCEA63D2D39802A001B479F /* NotYourMom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotYourMom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCEA64D2D39802C001B479F /* NotYourMomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotYourMomTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCEA6572D39802C001B479F /* NotYourMomUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotYourMomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BEC19752D51A20D00CA3B32 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -85,6 +89,7 @@
 				"Fonts/SourGummy_SemiExpanded-Medium.ttf",
 				"Fonts/SourGummy_SemiExpanded-Regular.ttf",
 				Models/LiveActivityMessage.swift,
+				NotYourMom.storekit,
 				pomoNoBG.riv,
 				Screens/LaunchScreen/RadialGradientView.swift,
 			);
@@ -144,7 +149,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BEC19722D51A1F100CA3B32 /* RevenueCat in Frameworks */,
 				4B22A0D52D3C262600B1A490 /* RiveRuntime in Frameworks */,
+				4BEC19742D51A1F100CA3B32 /* RevenueCatUI in Frameworks */,
+				4BEC19762D51A20D00CA3B32 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +176,7 @@
 		4B22A1682D3F3BAE00B1A490 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4BEC19752D51A20D00CA3B32 /* StoreKit.framework */,
 				4B22A1692D3F3BAE00B1A490 /* WidgetKit.framework */,
 				4B22A16B2D3F3BAE00B1A490 /* SwiftUI.framework */,
 			);
@@ -242,6 +251,8 @@
 			name = NotYourMom;
 			packageProductDependencies = (
 				4B22A0D42D3C262600B1A490 /* RiveRuntime */,
+				4BEC19712D51A1F100CA3B32 /* RevenueCat */,
+				4BEC19732D51A1F100CA3B32 /* RevenueCatUI */,
 			);
 			productName = NotYourMom;
 			productReference = 4BCEA63D2D39802A001B479F /* NotYourMom.app */;
@@ -330,6 +341,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */,
+				4BEC19702D51A1F100CA3B32 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4BCEA63E2D39802A001B479F /* Products */;
@@ -807,6 +819,14 @@
 				minimumVersion = 6.5.7;
 			};
 		};
+		4BEC19702D51A1F100CA3B32 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.16.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -814,6 +834,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B22A0D32D3C262600B1A490 /* XCRemoteSwiftPackageReference "rive-ios" */;
 			productName = RiveRuntime;
+		};
+		4BEC19712D51A1F100CA3B32 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BEC19702D51A1F100CA3B32 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		4BEC19732D51A1F100CA3B32 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BEC19702D51A1F100CA3B32 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

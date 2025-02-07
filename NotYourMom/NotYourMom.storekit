@@ -1,0 +1,131 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "A7093753",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : true,
+      "internalID" : "6741405556",
+      "localizations" : [
+        {
+          "description" : "Subscription for access to all the features",
+          "displayName" : "Annual Subscription",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "rp_199_1y_1w0",
+      "referenceName" : "Life time subscription",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6740845881",
+    "_developerTeamID" : "473BWG9258",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 760376421.03493404,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21629837",
+      "localizations" : [
+
+      ],
+      "name" : "RudePomoSubscriptions",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6741406127",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Subscription for access to all the features",
+              "displayName" : "Annual Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "rp_199_1y_1w0_first",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual $1.99,  1-week free",
+          "subscriptionGroupID" : "21629837",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
