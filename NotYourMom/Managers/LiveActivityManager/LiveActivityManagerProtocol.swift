@@ -8,6 +8,6 @@
 import Foundation
 
 protocol LiveActivityManagerProtocol {
-    func startLiveActivity(_ contentState: RudePomoWidgetAttributes.ContentState) async
-    func stopLiveActivity(_ currentState: SessionState, _ isBreakSession: Bool) async
+    func startLiveActivity(_ contentState: RudePomoWidgetAttributes.ContentState)
+    func stopLiveActivity(_ currentState: SessionState, _ isBreakSession: Bool)
 }

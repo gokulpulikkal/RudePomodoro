@@ -5,10 +5,10 @@
 //  Created by Gokul P on 1/29/25.
 //
 
-import CoreMotion
+@preconcurrency import CoreMotion
 import Foundation
 
-class MotionDetector: MotionDetectorProtocol {
+actor MotionDetector: MotionDetectorProtocol {
 
     enum PhoneState {
         case flat
@@ -40,9 +40,14 @@ class MotionDetector: MotionDetectorProtocol {
                 continuation.finish()
                 return
             }
+            continuation.onTermination = { @Sendable _ in
+                Task {
+                    await self.stopDetectionService()
+                }
+            }
             motionDetectionContinuation = continuation
             isMotionDetecting = true
-            Task {
+            Task { @Sendable in
                 for await motion in motionDetectionService.getMotionUpdateStream() {
                     continuation.yield(hasDetectedMotion(motion))
                 }
@@ -55,6 +60,10 @@ class MotionDetector: MotionDetectorProtocol {
             return
         }
         motionDetectionContinuation?.finish()
+        stopDetectionService()
+    }
+    
+    private func stopDetectionService() {
         motionDetectionService.stopStream()
         isMotionDetecting = false
     }

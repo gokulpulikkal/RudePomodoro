@@ -14,19 +14,16 @@ class SessionHistoryManager {
 
     /// Whatever fetching or inserting thing on this model context should happen on the Main actor
     private weak var modelContext: ModelContext?
-    var sessions: [PomodoroSession] = []
+    
 
     func setModelContext(_ context: ModelContext) {
         modelContext = context
-        Task {
-            await fetchSessions()
-        }
     }
 
     @MainActor
-    func fetchSessions() async {
+    func fetchSessions() async -> [PomodoroSession] {
         guard let modelContext else {
-            return
+            return []
         }
 
         let descriptor = FetchDescriptor<PomodoroSession>(
@@ -34,10 +31,10 @@ class SessionHistoryManager {
         )
 
         do {
-            sessions = try modelContext.fetch(descriptor)
+            return try modelContext.fetch(descriptor)
         } catch {
             print("Failed to fetch sessions: \(error)")
-            sessions = []
+            return []
         }
     }
 

@@ -225,12 +225,7 @@ extension HomeScreen {
         /// Toggle the audio state
         func toggleAudioMute() {
             isMute.toggle()
-            Task.detached { [weak self] in
-                guard let self else {
-                    return
-                }
-                await musicManager.toggleMute(isMute: isMute)
-            }
+            musicManager.toggleMute(isMute: isMute)
         }
 
         /// logic to show hide skip button
@@ -271,7 +266,7 @@ extension HomeScreen {
 
         /// Monitors the async stream from motion monitoring manager
         func startMotionMonitoring() async {
-            for await motionDetected in motionManager.hasDetectedMotion() {
+            for await motionDetected in await motionManager.hasDetectedMotion() {
                 if !motionDetected {
                     continue
                 }
@@ -281,7 +276,9 @@ extension HomeScreen {
 
         /// Cancel the motionManager asyncSequence task
         func stopMotionMonitoring() {
-            motionManager.stopMonitoring()
+            Task {
+                await motionManager.stopMonitoring()
+            }
         }
 
         /// Stops the music and motion manager sessions
@@ -428,25 +425,21 @@ extension HomeScreen {
 
         /// Starts live activity
         func startLiveActivity() {
-            Task { [isBreakSession, timerTime, breakTime, sessionStartDate] in
-                let message: LiveActivityMessage = isBreakSession
-                    ? .init(title: "Break Time", body: "Taking a well-deserved break")
-                    : .init(title: "Pomo is sleeping", body: "Focus time!")
+            let message: LiveActivityMessage = isBreakSession
+                ? .init(title: "Break Time", body: "Taking a well-deserved break")
+                : .init(title: "Pomo is sleeping", body: "Focus time!")
 
-                let initialState = RudePomoWidgetAttributes.ContentState(
-                    startDate: sessionStartDate,
-                    timerDuration: isBreakSession ? Double(breakTime ?? 10) * 60 : Double(timerTime ?? 10) * 60,
-                    liveActivityMessage: message
-                )
-                await liveActivityManager.startLiveActivity(initialState)
-            }
+            let initialState = RudePomoWidgetAttributes.ContentState(
+                startDate: sessionStartDate,
+                timerDuration: isBreakSession ? Double(breakTime ?? 10) * 60 : Double(timerTime ?? 10) * 60,
+                liveActivityMessage: message
+            )
+            liveActivityManager.startLiveActivity(initialState)
         }
 
         /// stops live activity
         func stopLiveActivity() {
-            Task { [currentState, isBreakSession] in
-                await liveActivityManager.stopLiveActivity(currentState, isBreakSession)
-            }
+            liveActivityManager.stopLiveActivity(currentState, isBreakSession)
         }
     }
 }

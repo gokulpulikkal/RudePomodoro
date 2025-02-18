@@ -7,8 +7,8 @@
 
 import Foundation
 
-protocol MotionDetectorProtocol {    
-    func hasDetectedMotion() -> AsyncStream<Bool>
+protocol MotionDetectorProtocol: Sendable {    
+    func hasDetectedMotion() async -> AsyncStream<Bool>
 
-    func stopMonitoring()
+    func stopMonitoring() async
 }

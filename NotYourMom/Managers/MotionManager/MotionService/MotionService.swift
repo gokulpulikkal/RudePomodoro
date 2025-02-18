@@ -5,18 +5,18 @@
 //  Created by Gokul P on 1/29/25.
 //
 
-import CoreMotion
+@preconcurrency import CoreMotion
 import Foundation
 
 class MotionService: MotionServiceProtocol {
 
-    var continuation: AsyncStream<CMDeviceMotion>.Continuation?
+    private var continuation: AsyncStream<CMDeviceMotion>.Continuation?
 
     func getMotionUpdateStream() -> AsyncStream<CMDeviceMotion> {
         AsyncStream { continuation in
             let motionManager = CMMotionManager()
             continuation.onTermination = { @Sendable _ in
-                self.stopMonitoring(motionManager)
+                motionManager.stopDeviceMotionUpdates()
             }
             startMonitoring(motionManager, continuation)
         }
@@ -26,7 +26,10 @@ class MotionService: MotionServiceProtocol {
         continuation?.finish()
     }
 
-    func startMonitoring(_ motionManager: CMMotionManager, _ continuation: AsyncStream<CMDeviceMotion>.Continuation) {
+    private func startMonitoring(
+        _ motionManager: CMMotionManager,
+        _ continuation: AsyncStream<CMDeviceMotion>.Continuation
+    ) {
         guard motionManager.isDeviceMotionAvailable, !motionManager.isDeviceMotionActive else {
             continuation.finish()
             print("❌ Device motion is not available")
@@ -41,10 +44,6 @@ class MotionService: MotionServiceProtocol {
             }
             continuation.yield(motion)
         }
-    }
-
-    func stopMonitoring(_ motionManager: CMMotionManager) {
-        motionManager.stopDeviceMotionUpdates()
     }
 
 }

@@ -114,9 +114,7 @@ class NotificationManager {
 
     init() {
         self.rudenessLevel = 0
-        Task {
-            try? await requestPermission()
-        }
+        requestPermission()
     }
 
     func sessionStarted() {
@@ -124,8 +122,10 @@ class NotificationManager {
         rudenessLevel = 0
     }
 
-    func requestPermission() async throws -> Bool {
-        try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .criticalAlert])
+    func requestPermission() {
+        Task {
+            try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .criticalAlert])
+        }
     }
 
     private func getRudeMessage() -> RudeMessage {

@@ -22,12 +22,11 @@ struct NotYourMomApp: App {
         } catch {
             fatalError("Failed to initialize ModelContainer: \(error)")
         }
-        requestNotificationPermission()
         setUPRevenueCat()
     }
 
     private func setUPRevenueCat() {
-//        Purchases.logLevel = .debug
+        Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: "appl_xMElYuadfMMrEHjMsuJdLoCfSDd")
     }
 
@@ -63,23 +62,9 @@ struct NotYourMomApp: App {
             print("Error in getting entitlement details")
         }
     }
-
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [
-            .alert,
-            .criticalAlert,
-            .sound
-        ]) { granted, error in
-            if granted {
-                print("Notification permission granted")
-            } else if let error {
-                print("Error requesting notification permission: \(error.localizedDescription)")
-            }
-        }
-    }
 }
 
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUserNotificationCenterDelegate {
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil

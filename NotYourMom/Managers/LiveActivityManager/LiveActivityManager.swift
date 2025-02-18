@@ -5,15 +5,15 @@
 //  Created by Gokul P on 1/29/25.
 //
 
-import ActivityKit
+@preconcurrency import ActivityKit
 import Foundation
 
-actor LiveActivityManager: LiveActivityManagerProtocol {
+class LiveActivityManager: LiveActivityManagerProtocol {
 
     /// Live activity instance
-    var liveActivity: Activity<RudePomoWidgetAttributes>?
+    private var liveActivity: Activity<RudePomoWidgetAttributes>?
 
-    func startLiveActivity(_ contentState: RudePomoWidgetAttributes.ContentState) async {
+    func startLiveActivity(_ contentState: RudePomoWidgetAttributes.ContentState) {
         let content = ActivityContent(state: contentState, staleDate: nil, relevanceScore: 0.0)
         let adventure = RudePomoWidgetAttributes(name: "hero")
         do {
@@ -27,7 +27,7 @@ actor LiveActivityManager: LiveActivityManagerProtocol {
         }
     }
 
-    func stopLiveActivity(_ currentState: SessionState, _ isBreakSession: Bool) async {
+    func stopLiveActivity(_ currentState: SessionState, _ isBreakSession: Bool) {
         let liveActivityMessage: LiveActivityMessage = switch (currentState, isBreakSession) {
         case (.stopped, true):
             .init(title: "Break Interrupted", body: "Break ended early")
@@ -47,10 +47,15 @@ actor LiveActivityManager: LiveActivityManagerProtocol {
             liveActivityMessage: liveActivityMessage
         )
         let dismissalPolicy: ActivityUIDismissalPolicy = .default
-        await liveActivity?.end(
-            ActivityContent(state: finalContent, staleDate: nil),
-            dismissalPolicy: dismissalPolicy
-        )
+        if let liveActivity = liveActivity {
+            Task { @Sendable in
+                await liveActivity.end(
+                    ActivityContent(state: finalContent, staleDate: nil),
+                    dismissalPolicy: dismissalPolicy
+                )
+            }
+        }
+        
     }
 
 }
