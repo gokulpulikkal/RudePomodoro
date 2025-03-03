@@ -364,19 +364,19 @@ extension HomeScreen {
             sendMonitoringStoppedNotification()
             stopLiveActivity()
             clearSessionTimer()
-            resetTimerValues(!isBreakSession)
+            resetTimerValues()
         }
 
         /// resets timer values. Called after the session has ended
-        private func resetTimerValues(_ isForBreakSession: Bool) {
+        private func resetTimerValues() {
             guard currentState == .finished else {
                 return
             }
             setTimerValues()
         }
-
+        
         func setTimerValues() {
-            if currentState == .finished {
+            if currentState == .finished && !isBreakSession {
                 remainingTime = Double(breakTime ?? 5) * 60
             } else {
                 remainingTime = Double(timerTime ?? 25) * 60
