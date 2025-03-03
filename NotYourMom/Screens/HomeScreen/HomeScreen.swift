@@ -28,14 +28,14 @@ struct HomeScreen: View {
                             timerText
                                 .onTapGesture {
                                     withAnimation(.easeInOut) {
-                                        if viewModel.currentState == .idle {
+                                        if viewModel.currentState == .idle || viewModel.currentState == .finished {
                                             viewModel.isTimerEditing = true
                                         }
                                     }
                                 }
                             actionButton
                             skipBreakButton
-                                .opacity(viewModel.showSkipButton() ? 1 : 0)
+                                .opacity(viewModel.shouldShowBreakSessionControls() ? 1 : 0)
                         }
                         .opacity(viewModel.isTimerEditing ? 0 : 1)
                         .offset(x: viewModel.isTimerEditing ? -UIScreen.main.bounds.width : 0)
@@ -143,10 +143,11 @@ extension HomeScreen {
 
     var timeSelectorView: some View {
         VStack(spacing: 30) {
-            TimePickerView(position: viewModel.isBreakSession ? $viewModel.breakTime : $viewModel.timerTime)
+            TimePickerView(position: viewModel.shouldShowBreakSessionControls() ? $viewModel.breakTime : $viewModel.timerTime)
                 .frame(height: 150)
             Button(action: {
                 viewModel.isTimerEditing = false
+                viewModel.setTimerValues()
             }, label: {
                 Text("Done")
                     .font(.sourGummy(.regular, size: 20))
@@ -174,6 +175,7 @@ extension HomeScreen {
                         .frame(width: 20, height: 20, alignment: .center)
                         .contentTransition(.symbolEffect(.replace))
                 })
+                .disabled(viewModel.showFeatureToggleButtons())
                 Spacer()
                 HStack(spacing: 20) {
                     Button(action: {

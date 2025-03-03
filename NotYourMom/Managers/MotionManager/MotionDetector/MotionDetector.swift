@@ -71,7 +71,6 @@ actor MotionDetector: MotionDetectorProtocol {
     // MARK: - Motion processing
 
     private func hasDetectedMotion(_ motion: CMDeviceMotion) -> Bool {
-        print("getting the motion data")
         let gravity = motion.gravity
         let userAcceleration = motion.userAcceleration
         let attitude = motion.attitude

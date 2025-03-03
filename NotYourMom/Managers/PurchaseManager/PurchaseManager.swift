@@ -12,14 +12,14 @@ import SwiftUI
 @Observable
 @MainActor
 class PurchaseManager {
-    var isEntitled = false
+    var isEntitled = true // Change this to false when wanted to include payments
 
     func checkEntitlement() {
         Purchases.shared.getCustomerInfo { customerInfo, _ in
             if let entitlements = customerInfo?.entitlements.active, entitlements["pro"] != nil {
                 self.isEntitled = true
             } else {
-                self.isEntitled = false
+                self.isEntitled = true // Change this to false when wanted to include payments
             }
         }
     }

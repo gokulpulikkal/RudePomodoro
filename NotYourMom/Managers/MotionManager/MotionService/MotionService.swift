@@ -18,6 +18,7 @@ class MotionService: MotionServiceProtocol {
             continuation.onTermination = { @Sendable _ in
                 motionManager.stopDeviceMotionUpdates()
             }
+            self.continuation = continuation
             startMonitoring(motionManager, continuation)
         }
     }
@@ -35,7 +36,7 @@ class MotionService: MotionServiceProtocol {
             print("❌ Device motion is not available")
             return
         }
-        self.continuation = continuation
+        
         motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [weak self] motion, error in
             guard let motion, error == nil else {
                 print("Error: Unknown error receiving motion update \(error!.localizedDescription)")

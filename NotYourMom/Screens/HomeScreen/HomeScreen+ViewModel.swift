@@ -47,11 +47,7 @@ extension HomeScreen {
         }
 
         /// Time picker binding variable for the main session
-        var timerTime: Int? = 25 {
-            didSet {
-                remainingTime = Double(timerTime ?? 25) * 60
-            }
-        }
+        var timerTime: Int? = 1
 
         /// Time picker binding variable for the break session
         var breakTime: Int? = 5
@@ -229,7 +225,7 @@ extension HomeScreen {
         }
 
         /// logic to show hide skip button
-        func showSkipButton() -> Bool {
+        func shouldShowBreakSessionControls() -> Bool {
             currentState == .finished && !isBreakSession
         }
 
@@ -291,6 +287,8 @@ extension HomeScreen {
         /// Function to start the session countdown timer
         private func startSessionTimer() {
             sessionStartDate = Date()
+            // TODO : Change this to use task. This is having some issue with self. The remaining time is resetting to
+            // timer
             countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                 guard let self else {
                     return
@@ -374,7 +372,11 @@ extension HomeScreen {
             guard currentState == .finished else {
                 return
             }
-            if isForBreakSession {
+            setTimerValues()
+        }
+
+        func setTimerValues() {
+            if currentState == .finished {
                 remainingTime = Double(breakTime ?? 5) * 60
             } else {
                 remainingTime = Double(timerTime ?? 25) * 60

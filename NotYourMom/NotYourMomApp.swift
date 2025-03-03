@@ -22,33 +22,33 @@ struct NotYourMomApp: App {
         } catch {
             fatalError("Failed to initialize ModelContainer: \(error)")
         }
-        setUPRevenueCat()
+//        setUPRevenueCat()
     }
 
-    private func setUPRevenueCat() {
-        Purchases.logLevel = .debug
-        Purchases.configure(withAPIKey: "appl_xMElYuadfMMrEHjMsuJdLoCfSDd")
-    }
+//    private func setUPRevenueCat() {
+//        Purchases.logLevel = .debug
+//        Purchases.configure(withAPIKey: "") // Add the correct API key here
+//    }
 
     var body: some Scene {
         WindowGroup {
             LaunchScreen()
                 .environment(purchaseManager)
-                .presentPaywallIfNeeded(
-                    requiredEntitlementIdentifier: "Pro",
-                    purchaseCompleted: { customerInfo in
-                        purchaseManager.isEntitled = customerInfo.entitlements.active.keys.contains("Pro")
-                        print("The user now is entitled \(purchaseManager.isEntitled)")
-                    },
-                    restoreCompleted: { customerInfo in
-                        purchaseManager.isEntitled = customerInfo.entitlements.active.keys.contains("Pro")
-                        print("The user now is entitled \(purchaseManager.isEntitled)")
-                    }
-                    
-                )
-                .task {
-                    await checkEntitlement()
-                }
+//                .presentPaywallIfNeeded(
+//                    requiredEntitlementIdentifier: "Pro",
+//                    purchaseCompleted: { customerInfo in
+//                        purchaseManager.isEntitled = customerInfo.entitlements.active.keys.contains("Pro")
+//                        print("The user now is entitled \(purchaseManager.isEntitled)")
+//                    },
+//                    restoreCompleted: { customerInfo in
+//                        purchaseManager.isEntitled = customerInfo.entitlements.active.keys.contains("Pro")
+//                        print("The user now is entitled \(purchaseManager.isEntitled)")
+//                    }
+//                    
+//                )
+//                .task {
+//                    await checkEntitlement()
+//                }
         }
         .modelContainer(container)
     }
